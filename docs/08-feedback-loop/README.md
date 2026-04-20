@@ -4,7 +4,7 @@
 
 The first generated site is rarely perfect. A **feedback loop** means: detect problems, tell the agent **exactly** what failed, and regenerate **only what must change**—like revising an essay with teacher comments.
 
-**Neighbors**: [Chapter 03 — Workflow](../03-workflow/README.md) · [Chapter 05 — Prompts / Feedback engine](../05-prompts/feedback-engine.md) · [Chapter 12 — Common issues](../12-common-issues/README.md)
+**Neighbors**: [Chapter 03 — Workflow](../03-workflow/README.md) · [Chapter 16 — Context, LLM I/O, files](../16-context-llm-and-files/README.md) · [Chapter 05 — Prompts / Feedback engine](../05-prompts/feedback-engine.md) · [Chapter 12 — Common issues](../12-common-issues/README.md) · **Algorithm context:** [README.md](../../README.md) (repair path `fbA` / `fbB` → `rep*` → `incR` → `genCall`)
 
 ## Deep technical breakdown
 
@@ -27,6 +27,8 @@ flowchart LR
   gen2 --> val
   val -->|"pass"| done[Ship]
 ```
+
+That loop is the **same** as the `fbA` / `fbB` → `repair_count_lt_R_repair` → `increment_repair_count` → `genCall` region in the **main job algorithm** diagram in [README.md](../../README.md) and [Chapter 03 — Workflow](../03-workflow/README.md). Keep those diagrams aligned when you change repair policy.
 
 ## Real example
 

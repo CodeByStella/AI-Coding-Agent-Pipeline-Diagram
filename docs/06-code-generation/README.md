@@ -4,7 +4,7 @@
 
 **Code generation** is the step where layout and mapping become **real files**: `.tsx`, `.css`, and shared tokens. Think of it as translating a blueprint into carpentry—measurements must match.
 
-**Neighbors**: [Chapter 05 — Prompts](../05-prompts/code-generator.md) · [Chapter 07 — Sandbox](../07-sandbox/README.md) · [Chapter 08 — Feedback loop](../08-feedback-loop/README.md)
+**Neighbors**: [Chapter 05 — Prompts](../05-prompts/code-generator.md) · [Chapter 16 — Context, LLM I/O, files](../16-context-llm-and-files/README.md) · [Chapter 07 — Sandbox](../07-sandbox/README.md) · [Chapter 08 — Feedback loop](../08-feedback-loop/README.md)
 
 ## Deep technical breakdown
 

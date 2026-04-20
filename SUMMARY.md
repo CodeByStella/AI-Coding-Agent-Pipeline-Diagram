@@ -8,6 +8,7 @@
 * [Architecture](docs/02-architecture/README.md)
 * [Workflow and state machine](docs/03-workflow/README.md)
 * [Agent design](docs/04-agent-design/README.md)
+* [LLM context, response format, and file updates](docs/16-context-llm-and-files/README.md)
 
 ## Prompt engineering
 

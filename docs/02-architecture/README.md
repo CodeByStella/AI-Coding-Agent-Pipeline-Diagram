@@ -4,7 +4,7 @@
 
 **Architecture** answers: what are the big boxes, and how do they talk? Here the boxes are: connect to Figma, understand layout, map to React components, write files, check quality, and loop on feedback. Each box can be a **service** or a **step** inside one app.
 
-**Neighbors**: [Chapter 01 — Overview](../01-overview/README.md) · [Chapter 03 — Workflow](../03-workflow/README.md) · [Chapter 04 — Agent design](../04-agent-design/README.md)
+**Neighbors**: [Chapter 01 — Overview](../01-overview/README.md) · [Chapter 03 — Workflow](../03-workflow/README.md) · [Chapter 04 — Agent design](../04-agent-design/README.md) · **Canonical diagrams:** [README.md](../../README.md) (*Visual architecture — topology plus algorithms*)
 
 ## Deep technical breakdown
 
@@ -22,6 +22,8 @@ Use a **modular pipeline** behind a single orchestrator API:
 Communication is **message-passing**: each step receives `{ irSlice, userConfig, priorErrors }` and returns `{ patchSet, telemetry }`. Avoid letting the LLM freely write to disk without schema validation.
 
 ## Mermaid diagram
+
+Container placement (how services sit relative to control vs data plane):
 
 ```mermaid
 flowchart TB
@@ -57,6 +59,84 @@ flowchart TB
   f --> q
   figma --> p
 ```
+
+### Canonical topology and algorithm (synced with README)
+
+The following blocks mirror [README.md](../../README.md) (*Visual architecture — topology plus algorithms*). **Edit README and this subsection together** when the orchestrator algorithm changes.
+
+#### Topology (compact)
+
+```mermaid
+flowchart LR
+  usr[User] --> orch[Orchestrator]
+  rev[Review_UI] --> orch
+  orch --> fapi[Figma_API]
+  orch --> pipe[Agent_pipeline]
+  pipe --> ws[Workspace]
+  ws --> qual[Validator_Sandbox]
+  qual --> orch
+  orch --> art[Artifacts_Preview_Deploy]
+```
+
+#### Main job algorithm (branch-level detail)
+
+```mermaid
+flowchart TB
+  startNode([start_job])
+  startNode --> vIn{"inputs_valid_fileKey_frame_config"}
+  vIn -->|no| badIn([terminal_invalid_input])
+  vIn -->|yes| loadPol[load_policy_secrets_and_limits]
+  loadPol --> fetchTry[figma_GET_v1_files_key]
+  fetchTry --> http429{"http_status_429"}
+  http429 -->|yes| cntF{"fetch_attempt_lt_R_figma"}
+  cntF -->|yes| sleepB[sleep_exponential_backoff_jitter]
+  sleepB --> fetchTry
+  cntF -->|no| limF([terminal_figma_rate_limited])
+  http429 -->|no| httpOk{"http_status_200"}
+  httpOk -->|no| figErr([terminal_figma_http_error])
+  httpOk -->|yes| parseD[deterministic_parse_FigmaJSON_to_IR]
+  parseD --> irOk{"jsonschema_IR_valid"}
+  irOk -->|no| irFail([terminal_IR_build_failed])
+  irOk -->|yes| layCall[LLM_layout_analyzer_plus_schema_validate]
+  layCall --> layOk{"layout_JSON_valid"}
+  layOk -->|no| layRetry{"layout_attempt_lt_R_llm"}
+  layRetry -->|yes| layCall
+  layRetry -->|no| layFail([terminal_layout_failed])
+  layOk -->|yes| mapCall[LLM_component_mapper_plus_schema_validate]
+  mapCall --> mapOk{"mapper_JSON_valid"}
+  mapOk -->|no| mapRetry{"mapper_attempt_lt_R_llm"}
+  mapRetry -->|yes| mapCall
+  mapRetry -->|no| mapFail([terminal_mapper_failed])
+  mapOk -->|yes| genCall[LLM_code_generator_emit_PatchBundle]
+  genCall --> genOk{"patches_schema_and_path_allowlist_ok"}
+  genOk -->|no| genRetry{"codegen_attempt_lt_R_llm"}
+  genRetry -->|yes| genCall
+  genRetry -->|no| genFail([terminal_codegen_failed])
+  genOk -->|yes| applyP[git_apply_patches_atomic_to_workspace]
+  applyP --> staticV[run_tsc_eslint_unit_fast_host_or_sandbox]
+  staticV --> stOk{"static_checks_exit_zero"}
+  stOk -->|no| fbA[feedback_engine_build_RepairBrief_from_logs]
+  fbA --> repA{"repair_count_lt_R_repair"}
+  repA -->|yes| incR[increment_repair_count_append_brief_to_context]
+  incR --> genCall
+  repA -->|no| escA([terminal_needs_human_escalation])
+  stOk -->|yes| sbx[sandbox_pnpm_install_build_test_isolated]
+  sbx --> sbxOk{"sandbox_exit_zero"}
+  sbxOk -->|no| fbB[feedback_engine_from_sandbox_logs]
+  fbB --> repB{"repair_count_lt_R_repair"}
+  repB -->|yes| incR
+  repB -->|no| escB([terminal_needs_human_escalation])
+  sbxOk -->|yes| pack[write_artifact_bundle_dist_and_meta]
+  pack --> prv[publish_preview_URL_optional]
+  prv --> waitH{await_human_review_or_auto_approve}
+  waitH -->|approve| doneOk([terminal_success_publish_allowed])
+  waitH -->|change_request_text| humanBrief[merge_human_brief_into_repair_context]
+  humanBrief --> incR
+```
+
+**Policy knobs (same names as README):** `R_figma` (Figma fetch retries), `R_llm` (per-stage schema retries), `R_repair` (codegen repair budget), transactional **`applyP`**, human gate **`waitH`**.
+
+For the **time-ordered** view see [Chapter 04 — Agent design](../04-agent-design/README.md).
 
 ## Real example
 
