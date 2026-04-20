@@ -4,7 +4,7 @@
 
 **Prompt engineering** means writing instructions so the model does **predictable** work. In this system, each agent step gets: what role it plays, what JSON it must return, and what happens if it disobeys. Good prompts are **short, structured, and testable**.
 
-**Neighbors**: [Chapter 04 — Agent design](../04-agent-design/README.md) · per-node pages: [figma-parser](figma-parser.md), [layout-analyzer](layout-analyzer.md), [component-mapper](component-mapper.md), [code-generator](code-generator.md), [validator](validator.md), [feedback-engine](feedback-engine.md) · [Chapter 06 — Code generation](../06-code-generation/README.md)
+**Neighbors**: [Chapter 04 — Agent design](../04-agent-design/README.md) · [Chapter 16 — Context, LLM I/O, files](../16-context-llm-and-files/README.md) · per-node pages: [figma-parser](figma-parser.md), [layout-analyzer](layout-analyzer.md), [component-mapper](component-mapper.md), [code-generator](code-generator.md), [validator](validator.md), [feedback-engine](feedback-engine.md) · [Chapter 06 — Code generation](../06-code-generation/README.md)
 
 ## Deep technical breakdown
 

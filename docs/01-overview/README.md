@@ -4,7 +4,7 @@
 
 You are building software that helps someone turn a **visual design in Figma** into a **real website** they can host. An **AI agent** does not “see” Figma like a human; it reads **structured data** from Figma’s servers, builds an internal map of frames and styles, then writes **React** files. Humans still review because AI can make mistakes.
 
-**Neighbors**: go deeper in [Chapter 02 — Architecture](../02-architecture/README.md) and the step-by-step flow in [Chapter 03 — Workflow](../03-workflow/README.md).
+**Neighbors**: go deeper in [Chapter 02 — Architecture](../02-architecture/README.md), the step-by-step flow in [Chapter 03 — Workflow](../03-workflow/README.md), and how prompts are built in [Chapter 16 — Context, LLM I/O, files](../16-context-llm-and-files/README.md).
 
 ## Deep technical breakdown
 
@@ -27,6 +27,8 @@ graph LR
   agent --> figma
   agent --> user_site
 ```
+
+**Canonical control-flow diagrams** (topology, branch-level algorithm with `R_figma` / `R_llm` / `R_repair`, and full sequence) live in the root [README.md](../../README.md) and are **duplicated for implementers** in [Chapter 02 — Architecture](../02-architecture/README.md), [Chapter 03 — Workflow](../03-workflow/README.md), and [Chapter 04 — Agent design](../04-agent-design/README.md). Change README and those sections together when the algorithm changes.
 
 ## Real example
 

@@ -4,7 +4,7 @@
 
 From a user’s eyes: **paste a Figma link** → wait while the system fetches and thinks → **preview a website** → **request tweaks** (“make the hero tighter on mobile”) → the system updates → you **approve** and deploy.
 
-**Neighbors**: [Chapter 02 — Architecture](../02-architecture/README.md) · [Chapter 04 — Agent design](../04-agent-design/README.md) · [Chapter 08 — Feedback loop](../08-feedback-loop/README.md)
+**Neighbors**: [Chapter 02 — Architecture](../02-architecture/README.md) · [Chapter 04 — Agent design](../04-agent-design/README.md) · [Chapter 08 — Feedback loop](../08-feedback-loop/README.md) · **Canonical algorithm:** [README.md](../../README.md)
 
 ## Deep technical breakdown
 
@@ -17,6 +17,8 @@ Implement the flow as a **state machine** with **async jobs**:
 Persist **idempotency keys** per `(fileKey, frameId, promptVersion)` so retries do not duplicate artifacts.
 
 ## Mermaid diagram
+
+Product-facing **states** (what the UI shows):
 
 ```mermaid
 stateDiagram-v2
@@ -35,6 +37,78 @@ stateDiagram-v2
   completed --> [*]
   failed --> [*]
 ```
+
+### Orchestrator algorithm (synced with README)
+
+The diagram below is the **same branch-level logic** as diagram **§2 Main job algorithm** in [README.md](../../README.md). Use it when implementing the worker; use the **state diagram** above for UX copy and dashboards.
+
+```mermaid
+flowchart TB
+  startNode([start_job])
+  startNode --> vIn{"inputs_valid_fileKey_frame_config"}
+  vIn -->|no| badIn([terminal_invalid_input])
+  vIn -->|yes| loadPol[load_policy_secrets_and_limits]
+  loadPol --> fetchTry[figma_GET_v1_files_key]
+  fetchTry --> http429{"http_status_429"}
+  http429 -->|yes| cntF{"fetch_attempt_lt_R_figma"}
+  cntF -->|yes| sleepB[sleep_exponential_backoff_jitter]
+  sleepB --> fetchTry
+  cntF -->|no| limF([terminal_figma_rate_limited])
+  http429 -->|no| httpOk{"http_status_200"}
+  httpOk -->|no| figErr([terminal_figma_http_error])
+  httpOk -->|yes| parseD[deterministic_parse_FigmaJSON_to_IR]
+  parseD --> irOk{"jsonschema_IR_valid"}
+  irOk -->|no| irFail([terminal_IR_build_failed])
+  irOk -->|yes| layCall[LLM_layout_analyzer_plus_schema_validate]
+  layCall --> layOk{"layout_JSON_valid"}
+  layOk -->|no| layRetry{"layout_attempt_lt_R_llm"}
+  layRetry -->|yes| layCall
+  layRetry -->|no| layFail([terminal_layout_failed])
+  layOk -->|yes| mapCall[LLM_component_mapper_plus_schema_validate]
+  mapCall --> mapOk{"mapper_JSON_valid"}
+  mapOk -->|no| mapRetry{"mapper_attempt_lt_R_llm"}
+  mapRetry -->|yes| mapCall
+  mapRetry -->|no| mapFail([terminal_mapper_failed])
+  mapOk -->|yes| genCall[LLM_code_generator_emit_PatchBundle]
+  genCall --> genOk{"patches_schema_and_path_allowlist_ok"}
+  genOk -->|no| genRetry{"codegen_attempt_lt_R_llm"}
+  genRetry -->|yes| genCall
+  genRetry -->|no| genFail([terminal_codegen_failed])
+  genOk -->|yes| applyP[git_apply_patches_atomic_to_workspace]
+  applyP --> staticV[run_tsc_eslint_unit_fast_host_or_sandbox]
+  staticV --> stOk{"static_checks_exit_zero"}
+  stOk -->|no| fbA[feedback_engine_build_RepairBrief_from_logs]
+  fbA --> repA{"repair_count_lt_R_repair"}
+  repA -->|yes| incR[increment_repair_count_append_brief_to_context]
+  incR --> genCall
+  repA -->|no| escA([terminal_needs_human_escalation])
+  stOk -->|yes| sbx[sandbox_pnpm_install_build_test_isolated]
+  sbx --> sbxOk{"sandbox_exit_zero"}
+  sbxOk -->|no| fbB[feedback_engine_from_sandbox_logs]
+  fbB --> repB{"repair_count_lt_R_repair"}
+  repB -->|yes| incR
+  repB -->|no| escB([terminal_needs_human_escalation])
+  sbxOk -->|yes| pack[write_artifact_bundle_dist_and_meta]
+  pack --> prv[publish_preview_URL_optional]
+  prv --> waitH{await_human_review_or_auto_approve}
+  waitH -->|approve| doneOk([terminal_success_publish_allowed])
+  waitH -->|change_request_text| humanBrief[merge_human_brief_into_repair_context]
+  humanBrief --> incR
+```
+
+#### Mapping states to algorithm regions
+
+| UI / DB state | Region in flowchart (approximate) |
+|---------------|-----------------------------------|
+| `received` | before `fetchTry` |
+| `fetching_figma` | `fetchTry` … `httpOk` |
+| `building_ir` | `parseD` … `mapOk` (IR + layout + mapper) |
+| `generating_code` | `genCall` … `applyP` |
+| `running_checks` | `staticV` … `sbxOk` |
+| `repairing` | `fbA`/`fbB` → `incR` → `genCall` |
+| `awaiting_review` | `waitH` |
+| `completed` | `doneOk` |
+| `failed` | any `terminal_*` node |
 
 ## Real example
 

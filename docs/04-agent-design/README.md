@@ -4,7 +4,7 @@
 
 Instead of one giant AI, you run **smaller specialists**: one step understands Figma nodes, another understands layout, another writes React. They pass a **shared worksheet** (the IR plus error messages) forward like a relay race.
 
-**Neighbors**: [Chapter 03 — Workflow](../03-workflow/README.md) · [Chapter 05 — Prompts](../05-prompts/README.md) · [Chapter 06 — Code generation](../06-code-generation/README.md)
+**Neighbors**: [Chapter 03 — Workflow](../03-workflow/README.md) · [Chapter 16 — Context, LLM I/O, files](../16-context-llm-and-files/README.md) · [Chapter 05 — Prompts](../05-prompts/README.md) · [Chapter 06 — Code generation](../06-code-generation/README.md) · **Canonical sequence:** [README.md](../../README.md) (*§3 Time-ordered collaboration*)
 
 ## Deep technical breakdown
 
@@ -20,6 +20,58 @@ Instead of one giant AI, you run **smaller specialists**: one step understands F
 **Communication**: use a **directed acyclic graph** in v1 (linear pipeline). Add branching only when needed (e.g. parallelize image downloads). Messages should be **typed JSON** with `schemaVersion`, `nodeId`, `artifactUri`, and `errors[]`.
 
 ## Mermaid diagram
+
+### Full pipeline sequence (synced with README)
+
+Same as diagram **§3 Time-ordered collaboration** in [README.md](../../README.md); update **README and this block** when message flow changes.
+
+```mermaid
+sequenceDiagram
+  participant U as User_or_UI
+  participant O as Orchestrator
+  participant F as Figma_REST
+  participant L as LLM_chain_layout_map_gen
+  participant W as Workspace
+  participant V as Validator_static
+  participant S as Sandbox_CI
+  participant B as Feedback_engine
+
+  U->>O: create_job_fileKey_frame_config
+  loop figma_fetch_with_backoff
+    O->>F: GET_v1_files_key
+    F-->>O: JSON_or_429
+  end
+  O->>O: deterministic_IR_parse_validate
+  loop each_LLM_stage_with_schema_retry
+    O->>L: prompt_plus_IR_slice
+    L-->>O: JSON_or_invalid
+    O->>O: schema_validate_optional_retry
+  end
+  O->>W: apply_PatchBundle
+  O->>V: tsc_eslint_test
+  alt static_fail
+    V-->>O: errors
+    O->>B: logs_to_brief
+    B-->>O: RepairBrief
+    O->>L: codegen_with_brief_if_under_cap
+  else static_pass
+    V-->>O: ok
+    O->>S: pnpm_install_build_test
+    alt sandbox_fail
+      S-->>O: logs
+      O->>B: brief
+      B-->>O: RepairBrief
+      O->>L: codegen_repair
+    else sandbox_pass
+      S-->>O: ok
+      O->>U: preview_and_await_review
+    end
+  end
+```
+
+### IR handoff between workers (zoom)
+
+Finer-grained message shapes between orchestrator and each worker (inside the `L` aggregate above):
 
 ```mermaid
 sequenceDiagram

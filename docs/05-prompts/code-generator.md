@@ -4,7 +4,7 @@
 
 The **code generator** writes **React + TypeScript** files: components, pages, and styles. It should follow the mapped tree and layout boxes, not improvise a new layout.
 
-**Neighbors**: [Component mapper](component-mapper.md) · [Validator](validator.md) · [Chapter 06 — Code generation](../06-code-generation/README.md)
+**Neighbors**: [Component mapper](component-mapper.md) · [Chapter 16 — Context, LLM I/O, files](../16-context-llm-and-files/README.md) · [Validator](validator.md) · [Chapter 06 — Code generation](../06-code-generation/README.md)
 
 ## Deep technical breakdown
 
