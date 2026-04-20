@@ -4,7 +4,7 @@
 
 Instead of one giant AI, you run **smaller specialists**: one step understands Figma nodes, another understands layout, another writes React. They pass a **shared worksheet** (the IR plus error messages) forward like a relay race.
 
-**Neighbors**: [Chapter 03 — Workflow](../03-workflow/README.md) · [Chapter 16 — Context, LLM I/O, files](../16-context-llm-and-files/README.md) · [Chapter 05 — Prompts](../05-prompts/README.md) · [Chapter 06 — Code generation](../06-code-generation/README.md) · **Canonical sequence:** [README.md](../../README.md) (*§3 Time-ordered collaboration*)
+**Neighbors**: [Chapter 03 — Workflow](../03-workflow/README.md) · [Chapter 16 — Context, LLM I/O, files](../16-context-llm-and-files/README.md) · [Chapter 05 — Prompts](../05-prompts/README.md) · [Modular prompt architecture](../05-prompts/modular-prompt-architecture.md) · [Multi-step orchestration](../05-prompts/multi-step-orchestration.md) · [Chapter 06 — Code generation](../06-code-generation/README.md) · **Canonical sequence:** [README.md](../../README.md) (*§3 Time-ordered collaboration*)
 
 ## Deep technical breakdown
 

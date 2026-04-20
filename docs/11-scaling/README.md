@@ -4,7 +4,7 @@
 
 **Scaling** means your system stays fast and reliable when **many users** run conversions at once. You add queues, more workers, and caching—not bigger prompts.
 
-**Neighbors**: [Chapter 02 — Architecture](../02-architecture/README.md) · [Chapter 15 — Cost optimization](../15-cost-optimization/README.md)
+**Neighbors**: [Chapter 02 — Architecture](../02-architecture/README.md) · [Chapter 15 — Cost optimization](../15-cost-optimization/README.md) · [Chapter 17 — Build vs integrate](../17-build-vs-integrate/README.md)
 
 ## Deep technical breakdown
 

@@ -4,7 +4,7 @@
 
 **Architecture** answers: what are the big boxes, and how do they talk? Here the boxes are: connect to Figma, understand layout, map to React components, write files, check quality, and loop on feedback. Each box can be a **service** or a **step** inside one app.
 
-**Neighbors**: [Chapter 01 — Overview](../01-overview/README.md) · [Chapter 03 — Workflow](../03-workflow/README.md) · [Chapter 04 — Agent design](../04-agent-design/README.md) · **Canonical diagrams:** [README.md](../../README.md) (*Visual architecture — topology plus algorithms*)
+**Neighbors**: [Chapter 01 — Overview](../01-overview/README.md) · [Chapter 03 — Workflow](../03-workflow/README.md) · [Chapter 04 — Agent design](../04-agent-design/README.md) · [Chapter 17 — Build vs integrate](../17-build-vs-integrate/README.md) · **Canonical diagrams:** [README.md](../../README.md) (*Visual architecture — topology plus algorithms*)
 
 ## Deep technical breakdown
 
@@ -20,6 +20,8 @@ Use a **modular pipeline** behind a single orchestrator API:
 | **Artifact store** | S3/Git bundle of outputs and logs |
 
 Communication is **message-passing**: each step receives `{ irSlice, userConfig, priorErrors }` and returns `{ patchSet, telemetry }`. Avoid letting the LLM freely write to disk without schema validation.
+
+**Prompt modules and planner loops** (how prompts are composed and when the LLM chooses several steps) live in [Modular prompt architecture](../05-prompts/modular-prompt-architecture.md) and [Multi-step orchestration](../05-prompts/multi-step-orchestration.md). **When to integrate sandboxes, gateways, and queues** instead of building them is covered in [Chapter 17 — Build vs integrate](../17-build-vs-integrate/README.md).
 
 ## Mermaid diagram
 

@@ -4,7 +4,7 @@
 
 A **sandbox** is a safe playground where generated code runs without risking your laptop or production. You run installs, builds, and tests there, then copy out only **verified artifacts**.
 
-**Neighbors**: [Chapter 06 — Code generation](../06-code-generation/README.md) · [Chapter 14 — Security](../14-security/README.md)
+**Neighbors**: [Chapter 06 — Code generation](../06-code-generation/README.md) · [Chapter 14 — Security](../14-security/README.md) · [Chapter 17 — Build vs integrate](../17-build-vs-integrate/README.md)
 
 ## Deep technical breakdown
 

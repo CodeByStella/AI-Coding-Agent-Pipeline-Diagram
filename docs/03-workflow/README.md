@@ -4,7 +4,7 @@
 
 From a user’s eyes: **paste a Figma link** → wait while the system fetches and thinks → **preview a website** → **request tweaks** (“make the hero tighter on mobile”) → the system updates → you **approve** and deploy.
 
-**Neighbors**: [Chapter 02 — Architecture](../02-architecture/README.md) · [Chapter 04 — Agent design](../04-agent-design/README.md) · [Chapter 08 — Feedback loop](../08-feedback-loop/README.md) · **Canonical algorithm:** [README.md](../../README.md)
+**Neighbors**: [Chapter 02 — Architecture](../02-architecture/README.md) · [Chapter 04 — Agent design](../04-agent-design/README.md) · [Chapter 08 — Feedback loop](../08-feedback-loop/README.md) · [Multi-step orchestration](../05-prompts/multi-step-orchestration.md) · **Canonical algorithm:** [README.md](../../README.md)
 
 ## Deep technical breakdown
 

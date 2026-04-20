@@ -4,7 +4,7 @@
 
 **Prompt engineering** means writing instructions so the model does **predictable** work. In this system, each agent step gets: what role it plays, what JSON it must return, and what happens if it disobeys. Good prompts are **short, structured, and testable**.
 
-**Neighbors**: [Chapter 04 — Agent design](../04-agent-design/README.md) · [Chapter 16 — Context, LLM I/O, files](../16-context-llm-and-files/README.md) · per-node pages: [figma-parser](figma-parser.md), [layout-analyzer](layout-analyzer.md), [component-mapper](component-mapper.md), [code-generator](code-generator.md), [validator](validator.md), [feedback-engine](feedback-engine.md) · [Chapter 06 — Code generation](../06-code-generation/README.md)
+**Neighbors**: [Chapter 04 — Agent design](../04-agent-design/README.md) · [Chapter 16 — Context, LLM I/O, files](../16-context-llm-and-files/README.md) · [Modular prompt architecture](modular-prompt-architecture.md) · [Multi-step orchestration](multi-step-orchestration.md) · per-node pages: [figma-parser](figma-parser.md), [layout-analyzer](layout-analyzer.md), [component-mapper](component-mapper.md), [code-generator](code-generator.md), [validator](validator.md), [feedback-engine](feedback-engine.md) · [Chapter 06 — Code generation](../06-code-generation/README.md) · [Chapter 17 — Build vs integrate](../17-build-vs-integrate/README.md)
 
 ## Deep technical breakdown
 
@@ -17,6 +17,12 @@ Use a **three-layer prompt**:
 **Prompt chaining**: output of step N becomes **typed input** to step N+1—never free-form prose between machines. **Debugging**: log token counts, refusal patterns, schema validation failures; keep a **golden IR** fixture and run prompts in CI with `temperature=0` for regression.
 
 **Validation rules**: every LLM step should post-process with **JSON Schema** validation and reject-and-retry once with the validation error appended.
+
+**Modular prompts:** split policy, stack, role, and schema fragments; assemble per step with a versioned **registry**—see [Modular prompt architecture](modular-prompt-architecture.md).
+
+**Multi-step LLM work:** when the model must choose a sequence of tools or subtasks, use a **bounded planner + executor** (`PlanStep[]`, allowlisted tools, `max_steps` / re-plan caps)—see [Multi-step orchestration](multi-step-orchestration.md). Keep the **Figma IR pipeline fixed** unless you intentionally carve out an exploratory repair island.
+
+**Off-the-shelf layers:** sandboxes, gateways, queues, and telemetry are often faster to integrate than to build—see [Chapter 17 — Build vs integrate](../17-build-vs-integrate/README.md).
 
 ## Mermaid diagram
 

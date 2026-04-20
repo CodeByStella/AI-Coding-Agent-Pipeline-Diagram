@@ -4,7 +4,7 @@
 
 You **cannot** paste the whole codebase into the model every time: it will not fit, it is noisy, and it leaks secrets. Instead the app builds a **small, purposeful package of text** for each step: “here is the slice of the design we are implementing, here are the few repo files that matter, here are the rules.” The model answers in a **fixed format** (usually JSON). Your backend **checks** that format, then **writes or patches files** safely—not by blindly trusting prose.
 
-**Neighbors**: [Chapter 04 — Agent design](../04-agent-design/README.md) · [Chapter 05 — Prompts / Code generator](../05-prompts/code-generator.md) · [Chapter 06 — Code generation](../06-code-generation/README.md) · [Chapter 08 — Feedback loop](../08-feedback-loop/README.md)
+**Neighbors**: [Chapter 04 — Agent design](../04-agent-design/README.md) · [Chapter 05 — Prompts / Code generator](../05-prompts/code-generator.md) · [Modular prompt architecture](../05-prompts/modular-prompt-architecture.md) · [Multi-step orchestration](../05-prompts/multi-step-orchestration.md) · [Chapter 06 — Code generation](../06-code-generation/README.md) · [Chapter 08 — Feedback loop](../08-feedback-loop/README.md)
 
 ## Deep technical breakdown
 

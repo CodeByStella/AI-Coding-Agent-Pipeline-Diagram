@@ -32,6 +32,17 @@ Prefer linking here from other docs instead of scattering URLs; when APIs have b
 | OWASP Top 10 for LLM Applications | https://owasp.org/www-project-top-10-for-large-language-model-applications/ |
 | NIST AI RMF (organizational framing) | https://www.nist.gov/itl/ai-risk-management-framework |
 
+### Optional ecosystem (agent infrastructure)
+
+Pointers for **integrations** discussed in [Chapter 17 — Build vs integrate](../17-build-vs-integrate/README.md); verify license and data policy before adoption.
+
+| Topic | URL |
+|-------|-----|
+| Docker docs | https://docs.docker.com/ |
+| OpenTelemetry | https://opentelemetry.io/docs/ |
+| Temporal (durable workflows) | https://docs.temporal.io/ |
+| LiteLLM (multi-provider gateway) | https://docs.litellm.ai/docs/ |
+
 ## Mermaid diagram
 
 ```mermaid
