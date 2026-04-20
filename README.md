@@ -2,6 +2,8 @@
 
 This repository is **documentation only**: a GitBook-friendly, implementation-oriented guide for building an **AI agent system** that reads **Figma** designs and produces **production-grade frontend code** (this corpus standardizes on **React + TypeScript + Vite**).
 
+**You write the product in a separate app repo** (API + worker + templates). The **step-by-step build path** lives in [docs/00-build-track/README.md](docs/00-build-track/README.md): milestones **M0–M10**, checklists, and “done when” tests. Use the numbered chapters as deep dives when each milestone points you there.
+
 ## Who this is for
 
 - **Beginners and PMs**: you learn what the system does end-to-end, without assuming you already know agents or the Figma API.  
@@ -150,8 +152,9 @@ Diagrams **§1–§3** above are mirrored for implementers in [docs/02-architect
 
 | Goal | Where to start | Time |
 |------|----------------|------|
+| **Build the agent (juniors — default path)** | [docs/00-build-track/README.md](docs/00-build-track/README.md) → [stack and repo layout](docs/00-build-track/stack-and-repo-structure.md) → [http-and-shape-samples](docs/00-build-track/http-and-shape-samples.md) → [example JSON](docs/schemas/README.md) | multi-day / weeks |
 | Understand the product story | [docs/01-overview/README.md](docs/01-overview/README.md) | ~20 min |
-| Implement the pipeline | [docs/03-workflow/README.md](docs/03-workflow/README.md) → [docs/04-agent-design/README.md](docs/04-agent-design/README.md) → [docs/16-context-llm-and-files/README.md](docs/16-context-llm-and-files/README.md) → [docs/05-prompts/README.md](docs/05-prompts/README.md) | ~2–4 hours reading |
+| Read the pipeline conceptually | [docs/03-workflow/README.md](docs/03-workflow/README.md) → [docs/04-agent-design/README.md](docs/04-agent-design/README.md) → [docs/16-context-llm-and-files/README.md](docs/16-context-llm-and-files/README.md) → [docs/05-prompts/README.md](docs/05-prompts/README.md) | ~2–4 hours reading |
 | Ship safely | [docs/14-security/README.md](docs/14-security/README.md) + [docs/07-sandbox/README.md](docs/07-sandbox/README.md) | ~1 hour |
 | Modular prompts and planner-style steps | [docs/05-prompts/modular-prompt-architecture.md](docs/05-prompts/modular-prompt-architecture.md) → [docs/05-prompts/multi-step-orchestration.md](docs/05-prompts/multi-step-orchestration.md) | ~30 min |
 | Integrate vs build (sandboxes, gateways, queues) | [docs/17-build-vs-integrate/README.md](docs/17-build-vs-integrate/README.md) | ~20 min |
@@ -159,6 +162,7 @@ Diagrams **§1–§3** above are mirrored for implementers in [docs/02-architect
 ## How to navigate
 
 - **GitBook sidebar**: open [SUMMARY.md](SUMMARY.md) (this is the table of contents GitBook expects at the repo root).  
+- **Build track first**: [docs/00-build-track/](docs/00-build-track/) (milestones + [stack and repo layout](docs/00-build-track/stack-and-repo-structure.md)), [docs/schemas/](docs/schemas/) (example IR / PatchBundle / RepairBrief JSON).  
 - **All chapters**: live under [docs/](docs/) in numbered folders (`01-overview` … `17-build-vs-integrate`, plus `00-references`).  
 - **Canonical external links**: [docs/00-references.md](docs/00-references.md).
 

@@ -1,10 +1,12 @@
 # Chapter 05 — Prompt engineering (overview)
 
+**Build track:** **M4** introduces the first LLM step with schema retry; adopt [modular prompt architecture](modular-prompt-architecture.md) from M4 onward (even if v1 uses one file per module). Per-node prompt pages matter most from **M4–M7**. [Multi-step orchestration](multi-step-orchestration.md) is optional until you add exploratory repair beyond the fixed pipeline ([build track](../00-build-track/README.md)).
+
 ## Simple explanation
 
 **Prompt engineering** means writing instructions so the model does **predictable** work. In this system, each agent step gets: what role it plays, what JSON it must return, and what happens if it disobeys. Good prompts are **short, structured, and testable**.
 
-**Neighbors**: [Chapter 04 — Agent design](../04-agent-design/README.md) · [Chapter 16 — Context, LLM I/O, files](../16-context-llm-and-files/README.md) · [Modular prompt architecture](modular-prompt-architecture.md) · [Multi-step orchestration](multi-step-orchestration.md) · per-node pages: [figma-parser](figma-parser.md), [layout-analyzer](layout-analyzer.md), [component-mapper](component-mapper.md), [code-generator](code-generator.md), [validator](validator.md), [feedback-engine](feedback-engine.md) · [Chapter 06 — Code generation](../06-code-generation/README.md) · [Chapter 17 — Build vs integrate](../17-build-vs-integrate/README.md)
+**Neighbors**: [Build track](../00-build-track/README.md) · [Chapter 04 — Agent design](../04-agent-design/README.md) · [Chapter 16 — Context, LLM I/O, files](../16-context-llm-and-files/README.md) · [Modular prompt architecture](modular-prompt-architecture.md) · [Multi-step orchestration](multi-step-orchestration.md) · per-node pages: [figma-parser](figma-parser.md), [layout-analyzer](layout-analyzer.md), [component-mapper](component-mapper.md), [code-generator](code-generator.md), [validator](validator.md), [feedback-engine](feedback-engine.md) · [Chapter 06 — Code generation](../06-code-generation/README.md) · [Chapter 17 — Build vs integrate](../17-build-vs-integrate/README.md)
 
 ## Deep technical breakdown
 

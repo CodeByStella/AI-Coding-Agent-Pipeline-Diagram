@@ -1,10 +1,25 @@
 # Chapter 03 — Workflow (end-to-end user flow)
 
+**Build track:** implement persistence and transitions for **M3**; align your DB `status` values with the table below. Preview/review wiring lands in **M8** ([build track](../00-build-track/README.md)).
+
 ## Simple explanation
 
 From a user’s eyes: **paste a Figma link** → wait while the system fetches and thinks → **preview a website** → **request tweaks** (“make the hero tighter on mobile”) → the system updates → you **approve** and deploy.
 
-**Neighbors**: [Chapter 02 — Architecture](../02-architecture/README.md) · [Chapter 04 — Agent design](../04-agent-design/README.md) · [Chapter 08 — Feedback loop](../08-feedback-loop/README.md) · [Multi-step orchestration](../05-prompts/multi-step-orchestration.md) · **Canonical algorithm:** [README.md](../../README.md)
+### Build track milestone mapping
+
+| Workflow state (this chapter) | Milestone (typical) |
+|------------------------------|---------------------|
+| `received` | M0–M1 |
+| `fetching_figma` | M1 |
+| `building_ir` | M2 |
+| `generating_code` | M4–M5 |
+| `running_checks` | M6 |
+| `repairing` | M7 |
+| `awaiting_review` | M8 |
+| `completed` / `failed` | M3 lifecycle terminals |
+
+**Neighbors**: [Build track](../00-build-track/README.md) · [Chapter 02 — Architecture](../02-architecture/README.md) · [Chapter 04 — Agent design](../04-agent-design/README.md) · [Chapter 08 — Feedback loop](../08-feedback-loop/README.md) · [Multi-step orchestration](../05-prompts/multi-step-orchestration.md) · **Canonical algorithm:** [README.md](../../README.md)
 
 ## Deep technical breakdown
 

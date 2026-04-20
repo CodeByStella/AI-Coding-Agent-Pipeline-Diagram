@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "goals": [
+    "Add missing Hero.module.css import target file",
+    "Ensure class names in TSX match CSS module"
+  ],
+  "constraints": [
+    "Do not change Button mapping for node 1:52"
+  ],
+  "filesToTouch": [
+    "src/sections/Hero.tsx",
+    "src/sections/Hero.module.css"
+  ],
+  "nonGoals": [
+    "Do not add animations"
+  ]
+}

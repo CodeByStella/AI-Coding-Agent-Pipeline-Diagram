@@ -1,10 +1,12 @@
 # Chapter 07 — Sandbox execution
 
+**Build track:** **M6** is your first green `pnpm build` / `pnpm test` inside an isolated runner (see **M6** in [build track](../00-build-track/README.md)).
+
 ## Simple explanation
 
 A **sandbox** is a safe playground where generated code runs without risking your laptop or production. You run installs, builds, and tests there, then copy out only **verified artifacts**.
 
-**Neighbors**: [Chapter 06 — Code generation](../06-code-generation/README.md) · [Chapter 14 — Security](../14-security/README.md) · [Chapter 17 — Build vs integrate](../17-build-vs-integrate/README.md)
+**Neighbors**: [Build track](../00-build-track/README.md) · [Chapter 06 — Code generation](../06-code-generation/README.md) · [Chapter 14 — Security](../14-security/README.md) · [Chapter 17 — Build vs integrate](../17-build-vs-integrate/README.md)
 
 ## Deep technical breakdown
 

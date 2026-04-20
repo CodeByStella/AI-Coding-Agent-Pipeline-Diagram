@@ -1,10 +1,24 @@
 # Chapter 01 — Overview
 
+**Build track:** if you are implementing the system, start at [Build track — milestones M0–M10](../00-build-track/README.md), then [Stack and repository structure](../00-build-track/stack-and-repo-structure.md); this chapter is the product story.
+
 ## Simple explanation
 
 You are building software that helps someone turn a **visual design in Figma** into a **real website** they can host. An **AI agent** does not “see” Figma like a human; it reads **structured data** from Figma’s servers, builds an internal map of frames and styles, then writes **React** files. Humans still review because AI can make mistakes.
 
-**Neighbors**: go deeper in [Chapter 02 — Architecture](../02-architecture/README.md), the step-by-step flow in [Chapter 03 — Workflow](../03-workflow/README.md), and how prompts are built in [Chapter 16 — Context, LLM I/O, files](../16-context-llm-and-files/README.md).
+### Prerequisites (before you code)
+
+- **TypeScript** and **HTTP** basics; comfortable reading JSON.  
+- A **Figma** file you can experiment on; a **personal access token** (or OAuth plan for later).  
+- **Node 20+** and **Docker** (recommended before sandbox milestone **M6** in the [build track](../00-build-track/README.md)).
+
+### Out of scope for v1 (defer)
+
+- Pixel-perfect match to every Figma plugin effect.  
+- Full design-system inference across hundreds of components.  
+- Multi-tenant billing and SSO—add after **M10** when the core pipeline is stable.
+
+**Neighbors**: [Build track](../00-build-track/README.md) · [Chapter 02 — Architecture](../02-architecture/README.md) · [Chapter 03 — Workflow](../03-workflow/README.md) · [Chapter 16 — Context, LLM I/O, files](../16-context-llm-and-files/README.md)
 
 ## Deep technical breakdown
 

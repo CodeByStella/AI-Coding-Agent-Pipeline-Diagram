@@ -2,7 +2,7 @@
 
 ## Simple explanation
 
-This page is a **link hub** so chapters stay readable and you still have proof for external behavior.
+This page is a **link hub** so chapters stay readable and you still have proof for external behavior. For **implementation order**, milestones, **stack**, and **repo layout**, use [Build track](../00-build-track/README.md), [Stack and repository structure](../00-build-track/stack-and-repo-structure.md), and [HTTP samples](../00-build-track/http-and-shape-samples.md).
 
 ## Deep technical breakdown
 

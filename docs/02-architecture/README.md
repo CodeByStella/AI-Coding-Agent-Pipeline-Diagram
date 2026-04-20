@@ -1,10 +1,12 @@
 # Chapter 02 — Architecture
 
+**Build track:** implement the **orchestrator boundary** and container split during **M0–M3** ([build track](../00-build-track/README.md)); the diagrams below match the README “canonical” copies.
+
 ## Simple explanation
 
 **Architecture** answers: what are the big boxes, and how do they talk? Here the boxes are: connect to Figma, understand layout, map to React components, write files, check quality, and loop on feedback. Each box can be a **service** or a **step** inside one app.
 
-**Neighbors**: [Chapter 01 — Overview](../01-overview/README.md) · [Chapter 03 — Workflow](../03-workflow/README.md) · [Chapter 04 — Agent design](../04-agent-design/README.md) · [Chapter 17 — Build vs integrate](../17-build-vs-integrate/README.md) · **Canonical diagrams:** [README.md](../../README.md) (*Visual architecture — topology plus algorithms*)
+**Neighbors**: [Build track](../00-build-track/README.md) · [Chapter 01 — Overview](../01-overview/README.md) · [Chapter 03 — Workflow](../03-workflow/README.md) · [Chapter 04 — Agent design](../04-agent-design/README.md) · [Chapter 17 — Build vs integrate](../17-build-vs-integrate/README.md) · **Canonical diagrams:** [README.md](../../README.md) (*Visual architecture — topology plus algorithms*)
 
 ## Deep technical breakdown
 

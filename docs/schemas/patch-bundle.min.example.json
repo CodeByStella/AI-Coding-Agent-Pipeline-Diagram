@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 2,
+  "patches": [
+    {
+      "path": "src/sections/Hero.tsx",
+      "operation": "add",
+      "content": "import styles from './Hero.module.css';\n\nexport function Hero() {\n  return (\n    <section className={styles.hero}>\n      <h1 className={styles.title}>Ship faster</h1>\n    </section>\n  );\n}\n"
+    },
+    {
+      "path": "src/sections/Hero.module.css",
+      "operation": "add",
+      "content": ".hero { display: flex; flex-direction: column; gap: 16px; }\n.title { font-size: 2rem; }\n"
+    }
+  ],
+  "rationale": "Maps IR frame Hero to a section and heading; optional log-only field."
+}

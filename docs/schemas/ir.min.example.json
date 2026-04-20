@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 0,
+  "fileKey": "exampleFileKey",
+  "rootFrameId": "1:50",
+  "nodes": [
+    {
+      "id": "1:50",
+      "type": "FRAME",
+      "name": "Hero",
+      "layoutMode": "HORIZONTAL",
+      "children": ["1:51", "1:52"]
+    },
+    {
+      "id": "1:51",
+      "type": "TEXT",
+      "name": "Headline",
+      "characters": "Ship faster",
+      "children": []
+    },
+    {
+      "id": "1:52",
+      "type": "INSTANCE",
+      "name": "Button/Primary",
+      "mainComponent": "Button",
+      "children": []
+    }
+  ]
+}
