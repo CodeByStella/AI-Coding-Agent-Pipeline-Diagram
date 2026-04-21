@@ -22,6 +22,16 @@ Different **AI models** have different strengths: some are better at long code, 
 
 Track **quality metrics** per route (pass rate, retries) weekly.
 
+### Self-hosted inference — example hardware baselines
+
+Use this table for **capacity planning** when you run **open-weight code models** on your own GPUs (vLLM, tensor parallel, etc.). Real needs depend on **context length**, **concurrency**, **quantization**, and the serving stack—always validate with a load test and the upstream model card.
+
+| Model | Size | Required infra |
+| ----- | ---- | -------------- |
+| **DeepSeek-Coder-V2** | 236B | 8× A100 / H100 (80GB VRAM each) <br>200GB+ system RAM <br>NVMe SSD 500GB+ <br>Multi-GPU distributed inference (vLLM / tensor parallel) |
+| **Qwen2.5-Coder-32B** | 32B | 1× A100 80GB OR 2× RTX 4090 <br>64–96GB RAM <br>NVMe SSD 100–200GB <br>FP16 or 4/8-bit quant |
+| **Qwen2.5-Coder-14B** | 14B | 1× RTX 4090 (24GB) OR A6000 <br>64GB RAM <br>NVMe SSD 100GB <br>4-bit / 8-bit quant recommended |
+
 ## Mermaid diagram
 
 ```mermaid

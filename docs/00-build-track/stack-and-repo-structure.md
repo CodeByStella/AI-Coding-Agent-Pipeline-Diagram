@@ -18,7 +18,7 @@ This page names the **default technology choices** for the **service you build**
 | **HTTP API** | **Fastify** or **Hono** (pick one team-wide) | `POST /jobs`, `GET /jobs/:id`, webhooks |
 | **Persistence** | **PostgreSQL** + **Drizzle** or **Prisma** | Jobs, state, artifact metadata; use **SQLite** only for local throwaway v0 |
 | **Queue / async** | **BullMQ** + **Redis**, or **Temporal**, or in-process queue for **M0–M3** only | Run long steps off the HTTP thread |
-| **LLM access** | Vendor **SDK** or HTTP to a **gateway** ([Chapter 17](../17-build-vs-integrate/README.md)) | Chat + JSON mode / tool calling per provider |
+| **LLM access** | Vendor **SDK** or HTTP to a **gateway** ([Chapter 17](../17-build-vs-integrate/README.md)); self-hosted GPU baselines in [Chapter 09](../09-model-selection/README.md) | Chat + JSON mode / tool calling per provider |
 | **Schema validation** | **Zod** and/or **Ajv** (JSON Schema) | IR, `PatchBundle`, `RepairBrief`, `PlanStep[]` |
 | **Sandbox** | **Docker** image running your `templates/vite-starter` | `pnpm install` / `build` / `test` ([Chapter 07](../07-sandbox/README.md)) |
 | **Generated product** | **Vite + React + TypeScript**, **CSS Modules** + design tokens | Matches the rest of this documentation corpus |
