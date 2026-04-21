@@ -34,55 +34,55 @@ Treat this as pseudocode rendered as a graph: each diamond is a branch; each rec
 
 ```mermaid
 flowchart TB
-  startNode([start_job])
-  startNode --> vIn{"inputs_valid_fileKey_frame_config"}
-  vIn -->|no| badIn([terminal_invalid_input])
-  vIn -->|yes| loadPol[load_policy_secrets_and_limits]
-  loadPol --> fetchTry[figma_GET_v1_files_key]
-  fetchTry --> http429{"http_status_429"}
-  http429 -->|yes| cntF{"fetch_attempt_lt_R_figma"}
-  cntF -->|yes| sleepB[sleep_exponential_backoff_jitter]
+  startNode([Start job])
+  startNode --> vIn{"Inputs OK?<br/>file key, frame, config"}
+  vIn -->|No| badIn([End: invalid input])
+  vIn -->|Yes| loadPol[Load policy, secrets, and limits]
+  loadPol --> fetchTry[Fetch file from Figma]
+  fetchTry --> http429{"Rate limited<br/>HTTP 429?"}
+  http429 -->|Yes| cntF{"Figma retries<br/>left?"}
+  cntF -->|Yes| sleepB[Wait with backoff,<br/>then retry fetch]
   sleepB --> fetchTry
-  cntF -->|no| limF([terminal_figma_rate_limited])
-  http429 -->|no| httpOk{"http_status_200"}
-  httpOk -->|no| figErr([terminal_figma_http_error])
-  httpOk -->|yes| parseD[deterministic_parse_FigmaJSON_to_IR]
-  parseD --> irOk{"jsonschema_IR_valid"}
-  irOk -->|no| irFail([terminal_IR_build_failed])
-  irOk -->|yes| layCall[LLM_layout_analyzer_plus_schema_validate]
-  layCall --> layOk{"layout_JSON_valid"}
-  layOk -->|no| layRetry{"layout_attempt_lt_R_llm"}
-  layRetry -->|yes| layCall
-  layRetry -->|no| layFail([terminal_layout_failed])
-  layOk -->|yes| mapCall[LLM_component_mapper_plus_schema_validate]
-  mapCall --> mapOk{"mapper_JSON_valid"}
-  mapOk -->|no| mapRetry{"mapper_attempt_lt_R_llm"}
-  mapRetry -->|yes| mapCall
-  mapRetry -->|no| mapFail([terminal_mapper_failed])
-  mapOk -->|yes| genCall[LLM_code_generator_emit_PatchBundle]
-  genCall --> genOk{"patches_schema_and_path_allowlist_ok"}
-  genOk -->|no| genRetry{"codegen_attempt_lt_R_llm"}
-  genRetry -->|yes| genCall
-  genRetry -->|no| genFail([terminal_codegen_failed])
-  genOk -->|yes| applyP[git_apply_patches_atomic_to_workspace]
-  applyP --> staticV[run_tsc_eslint_unit_fast_host_or_sandbox]
-  staticV --> stOk{"static_checks_exit_zero"}
-  stOk -->|no| fbA[feedback_engine_build_RepairBrief_from_logs]
-  fbA --> repA{"repair_count_lt_R_repair"}
-  repA -->|yes| incR[increment_repair_count_append_brief_to_context]
+  cntF -->|No| limF([End: Figma rate limit exceeded])
+  http429 -->|No| httpOk{"HTTP success<br/>200 OK?"}
+  httpOk -->|No| figErr([End: Figma request failed])
+  httpOk -->|Yes| parseD[Turn Figma JSON into<br/>internal design model]
+  parseD --> irOk{"Design model<br/>passes checks?"}
+  irOk -->|No| irFail([End: could not build design model])
+  irOk -->|Yes| layCall[LLM: analyze layout<br/>and validate output]
+  layCall --> layOk{"Layout output<br/>valid?"}
+  layOk -->|No| layRetry{"Layout stage<br/>retries left?"}
+  layRetry -->|Yes| layCall
+  layRetry -->|No| layFail([End: layout step failed])
+  layOk -->|Yes| mapCall[LLM: map to components<br/>and validate output]
+  mapCall --> mapOk{"Mapper output<br/>valid?"}
+  mapOk -->|No| mapRetry{"Mapper stage<br/>retries left?"}
+  mapRetry -->|Yes| mapCall
+  mapRetry -->|No| mapFail([End: mapping step failed])
+  mapOk -->|Yes| genCall[LLM: generate code patches]
+  genCall --> genOk{"Patches valid and<br/>paths allowed?"}
+  genOk -->|No| genRetry{"Codegen stage<br/>retries left?"}
+  genRetry -->|Yes| genCall
+  genRetry -->|No| genFail([End: code generation failed])
+  genOk -->|Yes| applyP[Apply patches to workspace<br/>all-or-nothing]
+  applyP --> staticV[Typecheck, lint,<br/>fast unit tests]
+  staticV --> stOk{"Static checks<br/>passed?"}
+  stOk -->|No| fbA[Summarize errors into<br/>repair notes]
+  fbA --> repA{"Repair budget<br/>left?"}
+  repA -->|Yes| incR[Attach notes and<br/>retry codegen]
   incR --> genCall
-  repA -->|no| escA([terminal_needs_human_escalation])
-  stOk -->|yes| sbx[sandbox_pnpm_install_build_test_isolated]
-  sbx --> sbxOk{"sandbox_exit_zero"}
-  sbxOk -->|no| fbB[feedback_engine_from_sandbox_logs]
-  fbB --> repB{"repair_count_lt_R_repair"}
-  repB -->|yes| incR
-  repB -->|no| escB([terminal_needs_human_escalation])
-  sbxOk -->|yes| pack[write_artifact_bundle_dist_and_meta]
-  pack --> prv[publish_preview_URL_optional]
-  prv --> waitH{await_human_review_or_auto_approve}
-  waitH -->|approve| doneOk([terminal_success_publish_allowed])
-  waitH -->|change_request_text| humanBrief[merge_human_brief_into_repair_context]
+  repA -->|No| escA([End: needs human;<br/>static repair budget used])
+  stOk -->|Yes| sbx[Sandbox: install, build,<br/>full tests]
+  sbx --> sbxOk{"Sandbox<br/>passed?"}
+  sbxOk -->|No| fbB[Summarize sandbox logs<br/>into repair notes]
+  fbB --> repB{"Repair budget<br/>left?"}
+  repB -->|Yes| incR
+  repB -->|No| escB([End: needs human;<br/>sandbox repair budget used])
+  sbxOk -->|Yes| pack[Write artifact bundle<br/>and metadata]
+  pack --> prv[Publish preview URL<br/>if configured]
+  prv --> waitH{"Approved by human<br/>or auto-approve?"}
+  waitH -->|Approve| doneOk([Done: success;<br/>publish if policy allows])
+  waitH -->|Change request| humanBrief[Merge reviewer feedback<br/>into repair context]
   humanBrief --> incR
 ```
 
@@ -91,8 +91,8 @@ flowchart TB
 - **`R_figma`**: max Figma fetch retries on 429/5xx.  
 - **`R_llm`**: per-stage schema repair attempts (typically 1 LLM retry after appending `ajv` / Zod errors).  
 - **`R_repair`**: max codegen re-entries after static or sandbox failure (global repair budget).  
-- **`applyP`**: should be transactional (new git worktree or reset on failure) so partial patches never poison the next loop.  
-- **`waitH`**: in batch mode you can auto-approve when all checks pass; in product mode you block until UI fires `approve` or `change_request`.
+- **Apply patches (atomic step in the diagram)**: should be transactional (new git worktree or reset on failure) so partial patches never poison the next loop.  
+- **Human review gate**: in batch mode you can auto-approve when all checks pass; in product mode you block until UI fires `approve` or `change_request`.
 
 ### 3) Time-ordered collaboration (sequence)
 
