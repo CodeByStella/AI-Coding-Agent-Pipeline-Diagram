@@ -2,7 +2,9 @@
 
 ## Simple explanation
 
-This page is the **spine** for juniors: you build your own **application repository** (Node/TypeScript service + workers) while this folder stays **documentation only**. Follow **M0 → M10** in order. Each milestone has a checklist, links into deeper chapters, and a **Done when** test you can actually run.
+This page is the **spine** for juniors: you build your own **application repository** (Node/TypeScript service + workers) while this folder stays **documentation only**. Follow **M0 → M10** in order. Each milestone has **micro-steps** (small checkboxes), links into deeper chapters, and a **Done when** test you can actually run. For charter-to-launch ordering aligned with these letters, use the **P1.1–P1.22** list in [Roadmap — from project start to production](roadmap-to-production.md).
+
+**Before you sequence milestones**, read [Roadmap — from project start to production](roadmap-to-production.md) for phases **P0–P5** (charter → MVP → alpha → production readiness → launch → operate) and how they align with **M0–M10**.
 
 **Canonical diagrams** (how the whole system fits together) stay in [README.md](../../README.md) and [Chapter 02 — Architecture](../02-architecture/README.md)—do not duplicate them here.
 
@@ -64,13 +66,16 @@ For **full stack choices** (Node, DB, queue, Docker, where each package lives) a
 
 **Read first:** [README.md](../../README.md) (diagrams), [Chapter 02 — Architecture](../02-architecture/README.md) (containers).
 
-**Implement**
+**Implement (micro-steps)**
 
-- [ ] Create a new git repo for your app (separate from this docs repo).
-- [ ] Add TypeScript HTTP server (Express/Fastify/Hono—pick one).
-- [ ] Add `GET /health` → `200 { "ok": true }`.
-- [ ] Add `POST /jobs` → creates `job` with `id`, `status: "received"` (in-memory or Postgres).
-- [ ] Add `GET /jobs/:id` → returns job JSON.
+- [ ] **M0.1** Create a new git repo for your app (separate from this docs repo).
+- [ ] **M0.2** Add `package.json`, TypeScript config, and a single `src` entry file.
+- [ ] **M0.3** Add TypeScript HTTP server (Express/Fastify/Hono—pick one); listen on configurable port.
+- [ ] **M0.4** Add `GET /health` → `200 { "ok": true }`.
+- [ ] **M0.5** Choose persistence (in-memory for spike, Postgres for real); add connection module if DB.
+- [ ] **M0.6** Add `POST /jobs` → creates `job` with `id`, `status: "received"`.
+- [ ] **M0.7** Add `GET /jobs/:id` → returns same shape as stored row.
+- [ ] **M0.8** Add minimal logging (request id optional) and `README` “how to run”.
 
 **Done when:** `curl` against local server returns health and can create/read a job.
 
@@ -84,12 +89,15 @@ For **full stack choices** (Node, DB, queue, Docker, where each package lives) a
 
 **Read first:** [docs/00-references.md](../00-references.md) (Figma REST links), [http-and-shape-samples.md](http-and-shape-samples.md).
 
-**Implement**
+**Implement (micro-steps)**
 
-- [ ] Store `FIGMA_ACCESS_TOKEN` in env (never commit).
-- [ ] Implement `GET https://api.figma.com/v1/files/:key` from server with `X-Figma-Token` or `Authorization: Bearer …` per Figma docs.
-- [ ] On success, persist **raw JSON** (or `document` subtree) keyed by `fileKey` + `version` if present.
-- [ ] Implement **429 backoff** (sleep + retry capped)—see algorithm in [README](../../README.md).
+- [ ] **M1.1** Add `.env.example` with `FIGMA_ACCESS_TOKEN` (no real values); document in README.
+- [ ] **M1.2** Load token from env in server bootstrap; fail fast if missing when Figma route is used.
+- [ ] **M1.3** Implement server-side `GET https://api.figma.com/v1/files/:key` with correct auth header per Figma docs.
+- [ ] **M1.4** Map HTTP errors to logged `status` + body snippet (redacted); return 502/400 to client as appropriate.
+- [ ] **M1.5** On success, persist **raw JSON** (or `document` subtree) keyed by `fileKey` + `version` if present.
+- [ ] **M1.6** Implement **429 backoff** (sleep + retry capped)—see algorithm in [README](../../README.md).
+- [ ] **M1.7** Add one manual or scripted test that logs retry behavior (can mock 429 in dev).
 
 **Done when:** For a real file key you control, your job or debug endpoint returns HTTP 200 and stored JSON length is non-zero.
 
@@ -103,11 +111,15 @@ For **full stack choices** (Node, DB, queue, Docker, where each package lives) a
 
 **Read first:** [Chapter 02](../02-architecture/README.md), [Chapter 04](../04-agent-design/README.md), [schemas/README.md](../schemas/README.md).
 
-**Implement**
+**Implement (micro-steps)**
 
-- [ ] Define `ir.schema.v0.json` (JSON Schema) for a minimal tree: `frameId`, `children[]`, `type`, `name`, `layoutMode`, `fills` summary—or your own v0 fields.
-- [ ] Write **pure functions** `figmaDocument → IR` (no LLM) for happy path only.
-- [ ] Validate output with Ajv/Zod in CI and at runtime.
+- [ ] **M2.1** Sketch IR shape on paper or ADR; list fields you need for first codegen step.
+- [ ] **M2.2** Add `ir.schema.v0.json` (JSON Schema) for minimal tree: `frameId`, `children[]`, `type`, `name`, `layoutMode`, `fills` summary—or your own v0 fields.
+- [ ] **M2.3** Generate or hand-write TypeScript types from schema (optional but helps).
+- [ ] **M2.4** Write **pure functions** `figmaDocument → IR` (no LLM) for happy path only.
+- [ ] **M2.5** Commit a **golden input** snippet (subset of real Figma JSON) in `fixtures/`.
+- [ ] **M2.6** Validate mapper output with Ajv/Zod in unit test.
+- [ ] **M2.7** Wire schema validation into CI on every PR.
 
 **Done when:** Golden fixture: given a committed `fixture.figma.document.json` snippet, `toIR()` output validates against schema in a unit test.
 
@@ -121,11 +133,14 @@ For **full stack choices** (Node, DB, queue, Docker, where each package lives) a
 
 **Read first:** [Chapter 03 — Workflow](../03-workflow/README.md).
 
-**Implement**
+**Implement (micro-steps)**
 
-- [ ] Map states to your DB: at least `received`, `fetching_figma`, `building_ir`, `generating_code`, `running_checks`, `repairing`, `awaiting_review`, `completed`, `failed`.
-- [ ] Worker loop: dequeue job → transition states → persist errors as structured JSON.
-- [ ] Idempotency key on `(fileKey, frameId, promptVersion)` optional but recommended.
+- [ ] **M3.1** List allowed states and valid transitions; document in `docs/workflow-states.md` (or README).
+- [ ] **M3.2** Add DB columns / enum for states: at least `received`, `fetching_figma`, `building_ir`, `generating_code`, `running_checks`, `repairing`, `awaiting_review`, `completed`, `failed`.
+- [ ] **M3.3** Implement enqueue path: `POST /jobs` sets `received` and queues work.
+- [ ] **M3.4** Worker loop: dequeue job → run step → transition state → persist.
+- [ ] **M3.5** On exception, persist `failed` + structured `error_code` + message (no manual DB edits).
+- [ ] **M3.6** (Recommended) Idempotency key on `(fileKey, frameId, promptVersion)` to avoid duplicate work.
 
 **Done when:** Forced failure in a step sets `failed` with `error_code`; happy path reaches `completed` without manual DB edits.
 
@@ -139,11 +154,14 @@ For **full stack choices** (Node, DB, queue, Docker, where each package lives) a
 
 **Read first:** [Chapter 05 — Prompts](../05-prompts/README.md), [Modular prompt architecture](../05-prompts/modular-prompt-architecture.md), [Chapter 16](../16-context-llm-and-files/README.md).
 
-**Implement**
+**Implement (micro-steps)**
 
-- [ ] Implement **PromptRecipe** assembler (even if modules are single files at first).
-- [ ] Pick **one** step only (e.g. `layout_analyzer` stub returning a trivial `LayoutTree` for one frame).
-- [ ] Append schema errors to prompt and **retry ≤ `R_llm`** on validation failure.
+- [ ] **M4.1** Implement **PromptRecipe** assembler (even if modules are single files at first).
+- [ ] **M4.2** Pick **one** step only (e.g. `layout_analyzer` stub returning a trivial `LayoutTree` for one frame).
+- [ ] **M4.3** Add JSON post-processor: strip markdown fences if model wraps output.
+- [ ] **M4.4** Validate model JSON against step schema; collect Ajv/Zod errors as strings.
+- [ ] **M4.5** Append schema errors to prompt and **retry ≤ `R_llm`** on validation failure.
+- [ ] **M4.6** Log token usage per attempt (even rough) for later M10.
 
 **Done when:** Integration test: mock LLM returns invalid JSON once, valid JSON second time → job progresses.
 
@@ -157,11 +175,13 @@ For **full stack choices** (Node, DB, queue, Docker, where each package lives) a
 
 **Read first:** [Chapter 16](../16-context-llm-and-files/README.md), [schemas/patch-bundle.min.example.json](../schemas/patch-bundle.min.example.json).
 
-**Implement**
+**Implement (micro-steps)**
 
-- [ ] Accept `PatchBundle` JSON; validate paths under `src/`.
-- [ ] Clone or copy `templates/vite-starter` into a **fresh worktree** per job.
-- [ ] Apply patches; on any failure, discard worktree.
+- [ ] **M5.1** Define `PatchBundle` TypeScript type + JSON Schema; align with [patch-bundle example](../schemas/patch-bundle.min.example.json).
+- [ ] **M5.2** Accept `PatchBundle` JSON in worker; reject paths outside `src/` (or your allowlist).
+- [ ] **M5.3** Clone or copy `templates/vite-starter` into a **fresh worktree** per job.
+- [ ] **M5.4** Apply patches in deterministic order; validate UTF-8 / size limits per file.
+- [ ] **M5.5** On any validation or IO failure, discard worktree and fail job cleanly.
 
 **Done when:** After apply, `src/App.tsx` (or chosen file) contains expected string from fixture PatchBundle in a test.
 
@@ -175,10 +195,14 @@ For **full stack choices** (Node, DB, queue, Docker, where each package lives) a
 
 **Read first:** [Chapter 07 — Sandbox](../07-sandbox/README.md), [Chapter 17](../17-build-vs-integrate/README.md).
 
-**Implement**
+**Implement (micro-steps)**
 
-- [ ] Docker (or k8s Job) runs `pnpm install --frozen-lockfile` (or `npm ci`) then `pnpm build` and `pnpm test` if you have tests.
-- [ ] Stream logs to object storage or DB with size cap.
+- [ ] **M6.1** Write `Dockerfile` (or Job spec) that receives worktree path / artifact ref.
+- [ ] **M6.2** In container: install deps with `pnpm install --frozen-lockfile` (or `npm ci`).
+- [ ] **M6.3** Run `pnpm build`; capture stdout/stderr with size cap.
+- [ ] **M6.4** Run `pnpm test` if you have tests; treat failures like build failures.
+- [ ] **M6.5** Map exit code to job row; store log pointer or truncated blob.
+- [ ] **M6.6** Document CPU/memory limits and timeout for sandbox step.
 
 **Done when:** CI or local script: known-good template passes; intentionally broken patch fails with non-zero exit captured in job row.
 
@@ -192,10 +216,13 @@ For **full stack choices** (Node, DB, queue, Docker, where each package lives) a
 
 **Read first:** [Chapter 08 — Feedback loop](../08-feedback-loop/README.md), [schemas/repair-brief.min.example.json](../schemas/repair-brief.min.example.json).
 
-**Implement**
+**Implement (micro-steps)**
 
-- [ ] Build `RepairBrief` from `tsc`/`eslint` lines (structured).
-- [ ] Increment `repair_count`; stop at `R_repair` and set `failed` or `awaiting_review` for human.
+- [ ] **M7.1** Parse `tsc` / `eslint` output into structured `{ file, line, code, message }[]`.
+- [ ] **M7.2** Map diagnostics into `RepairBrief` shape; validate against schema / example.
+- [ ] **M7.3** Increment `repair_count` each repair cycle; persist on job row.
+- [ ] **M7.4** When under cap, enqueue another codegen pass with brief attached.
+- [ ] **M7.5** When at `R_repair`, set `failed` or `awaiting_review` per your product policy.
 
 **Done when:** Inject a known TS error; second codegen attempt clears it in automated test (or reaches cap deterministically).
 
@@ -209,10 +236,13 @@ For **full stack choices** (Node, DB, queue, Docker, where each package lives) a
 
 **Read first:** [Chapter 03](../03-workflow/README.md) (`awaiting_review`), [README algorithm](../../README.md) node `waitH`.
 
-**Implement**
+**Implement (micro-steps)**
 
-- [ ] Publish `dist/` or dev server URL (even ephemeral ngrok-style for dev).
-- [ ] `POST /jobs/:id/review` with `{ "decision": "approve" | "change_request", "text": "..." }` merges into repair path.
+- [ ] **M8.1** After successful build, publish artifact: static `dist/` URL or short-lived preview tunnel for dev.
+- [ ] **M8.2** Persist preview URL + expiry on job row for client polling.
+- [ ] **M8.3** Transition job to `awaiting_review` when preview is ready.
+- [ ] **M8.4** Implement `POST /jobs/:id/review` with `{ "decision": "approve" | "change_request", "text": "..." }`.
+- [ ] **M8.5** On `approve`, move to `completed`; on `change_request`, append to repair queue with cap from M7.
 
 **Done when:** Manual test: approve transitions to `completed`; change request bumps `repairing` and re-runs bounded pipeline.
 
@@ -224,10 +254,14 @@ For **full stack choices** (Node, DB, queue, Docker, where each package lives) a
 
 **Read first:** [Chapter 14 — Security](../14-security/README.md).
 
-**Implement**
+**Implement (micro-steps)**
 
-- [ ] Secrets only in env/KMS; redact logs; path allowlist; no arbitrary shell from LLM.
-- [ ] Rate limit public job creation; authenticate callers if exposed beyond localhost.
+- [ ] **M9.1** Audit logs for accidental secret leakage; add redaction middleware.
+- [ ] **M9.2** Ensure LLM output cannot invoke shell; only structured patch path applies files.
+- [ ] **M9.3** Tighten path allowlist for PatchBundle and any file reads in worker.
+- [ ] **M9.4** Add authentication for job APIs if not localhost-only.
+- [ ] **M9.5** Add rate limit on `POST /jobs` (per IP or per API key).
+- [ ] **M9.6** Document sandbox egress policy; verify container matches policy.
 
 **Done when:** Checklist in Ch 14 satisfied for your threat model (document gaps explicitly).
 
@@ -239,10 +273,13 @@ For **full stack choices** (Node, DB, queue, Docker, where each package lives) a
 
 **Read first:** [Chapter 09](../09-model-selection/README.md), [Chapter 15](../15-cost-optimization/README.md).
 
-**Implement**
+**Implement (micro-steps)**
 
-- [ ] Log tokens per step; env-configurable model IDs per step.
-- [ ] Per-job `max_usd` or token ceiling; fail job gracefully when exceeded.
+- [ ] **M10.1** Add config map: step name → model id + max output tokens.
+- [ ] **M10.2** Log tokens in + out per step; aggregate on job row.
+- [ ] **M10.3** Estimate USD per job from token counts; compare to configured `max_usd`.
+- [ ] **M10.4** When over cap mid-pipeline, abort with `failed` + `error_code: budget` (or your code).
+- [ ] **M10.5** Expose last week’s cost per successful job in dashboard or export (even CSV).
 
 **Done when:** Load test or script proves a runaway job is cut off and status reflects `failed` with `error_code: budget`.
 

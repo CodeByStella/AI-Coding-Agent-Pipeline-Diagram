@@ -152,7 +152,7 @@ Diagrams **§1–§3** above are mirrored for implementers in [docs/02-architect
 
 | Goal | Where to start | Time |
 |------|----------------|------|
-| **Build the agent (juniors — default path)** | [docs/00-build-track/README.md](docs/00-build-track/README.md) → [stack and repo layout](docs/00-build-track/stack-and-repo-structure.md) → [http-and-shape-samples](docs/00-build-track/http-and-shape-samples.md) → [example JSON](docs/schemas/README.md) | multi-day / weeks |
+| **Build the agent (juniors — default path)** | [Roadmap — start to production](docs/00-build-track/roadmap-to-production.md) → [Build track M0–M10](docs/00-build-track/README.md) → [stack and repo layout](docs/00-build-track/stack-and-repo-structure.md) → [http-and-shape-samples](docs/00-build-track/http-and-shape-samples.md) → [example JSON](docs/schemas/README.md) | multi-day to launch |
 | Understand the product story | [docs/01-overview/README.md](docs/01-overview/README.md) | ~20 min |
 | Read the pipeline conceptually | [docs/03-workflow/README.md](docs/03-workflow/README.md) → [docs/04-agent-design/README.md](docs/04-agent-design/README.md) → [docs/16-context-llm-and-files/README.md](docs/16-context-llm-and-files/README.md) → [docs/05-prompts/README.md](docs/05-prompts/README.md) | ~2–4 hours reading |
 | Ship safely | [docs/14-security/README.md](docs/14-security/README.md) + [docs/07-sandbox/README.md](docs/07-sandbox/README.md) | ~1 hour |
@@ -162,7 +162,7 @@ Diagrams **§1–§3** above are mirrored for implementers in [docs/02-architect
 ## How to navigate
 
 - **GitBook sidebar**: open [SUMMARY.md](SUMMARY.md) (this is the table of contents GitBook expects at the repo root).  
-- **Build track first**: [docs/00-build-track/](docs/00-build-track/) (milestones + [stack and repo layout](docs/00-build-track/stack-and-repo-structure.md)), [docs/schemas/](docs/schemas/) (example IR / PatchBundle / RepairBrief JSON).  
+- **Build track first**: [docs/00-build-track/](docs/00-build-track/) ([roadmap to production](docs/00-build-track/roadmap-to-production.md), [M0–M10 milestones](docs/00-build-track/README.md), [stack and repo layout](docs/00-build-track/stack-and-repo-structure.md)), [docs/schemas/](docs/schemas/) (example IR / PatchBundle / RepairBrief JSON).  
 - **All chapters**: live under [docs/](docs/) in numbered folders (`01-overview` … `17-build-vs-integrate`, plus `00-references`).  
 - **Canonical external links**: [docs/00-references.md](docs/00-references.md).
 

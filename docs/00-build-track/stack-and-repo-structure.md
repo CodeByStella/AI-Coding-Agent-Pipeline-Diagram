@@ -4,7 +4,7 @@
 
 This page names the **default technology choices** for the **service you build** (the Figma-to-code agent), and shows a **concrete folder layout** so juniors know what to create in their own git repository. The **generated website** is still **React + TypeScript + Vite** (see [README.md](../../README.md)); the **agent platform** is mostly **Node + TypeScript** talking to Figma, a database, and an LLM.
 
-**Neighbors:** [Build track](README.md) · [Chapter 17 — Build vs integrate](../17-build-vs-integrate/README.md) · [Chapter 07 — Sandbox](../07-sandbox/README.md)
+**Neighbors:** [Build track](README.md) · [Roadmap to production](roadmap-to-production.md) · [Chapter 17 — Build vs integrate](../17-build-vs-integrate/README.md) · [Chapter 07 — Sandbox](../07-sandbox/README.md)
 
 ## Deep technical breakdown
 

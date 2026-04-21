@@ -1,6 +1,6 @@
 # Chapter 01 — Overview
 
-**Build track:** if you are implementing the system, start at [Build track — milestones M0–M10](../00-build-track/README.md), then [Stack and repository structure](../00-build-track/stack-and-repo-structure.md); this chapter is the product story.
+**Build track:** if you are implementing the system, start with [Roadmap — start to production](../00-build-track/roadmap-to-production.md), then [Milestones M0–M10](../00-build-track/README.md) and [Stack and repository structure](../00-build-track/stack-and-repo-structure.md); this chapter is the product story.
 
 ## Simple explanation
 
