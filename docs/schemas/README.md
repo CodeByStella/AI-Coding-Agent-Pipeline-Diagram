@@ -9,6 +9,7 @@ These small JSON files are **examples** juniors can copy into unit tests or sche
 ## Deep technical breakdown
 
 - **`ir.min.example.json`** — minimal IR v0-style document your `figma → IR` step might emit.  
+- **`design-spec.min.example.json`** — minimal **`DesignSpec`** for **requirements-only** jobs (routes, sections, tokens); stands in for **IR** until you attach a Figma-backed design.  
 - **`patch-bundle.min.example.json`** — what codegen returns before apply.  
 - **`repair-brief.min.example.json`** — what feedback engine merges into the next codegen context.
 
@@ -29,6 +30,7 @@ flowchart LR
 ## Real example
 
 - [ir.min.example.json](ir.min.example.json)  
+- [design-spec.min.example.json](design-spec.min.example.json)  
 - [patch-bundle.min.example.json](patch-bundle.min.example.json)  
 - [repair-brief.min.example.json](repair-brief.min.example.json)
 

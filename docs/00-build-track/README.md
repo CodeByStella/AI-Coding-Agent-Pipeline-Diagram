@@ -1,8 +1,8 @@
-# Build track — implement the Figma-to-code agent (start here)
+# Build track — implement the agentic coding agent (start here)
 
 ## Simple explanation
 
-This page is the **spine** for juniors: you build your own **application repository** (Node/TypeScript service + workers) while this folder stays **documentation only**. Follow **M0 → M10** in order. Each milestone has **micro-steps** (small checkboxes), links into deeper chapters, and a **Done when** test you can actually run. For charter-to-launch ordering aligned with these letters, use the **P1.1–P1.22** list in [Roadmap — from project start to production](roadmap-to-production.md).
+This page is the **spine** for juniors: you build your own **application repository** (Node/TypeScript service + workers) while this folder stays **documentation only**. Implement the **agentic core** (**M0 → M10**): orchestration, optional **Figma** fetch (**M1**), IR or equivalent design model, LLM stages with validation, **PatchBundle**, sandbox, repair, preview, cost and security. Add the **G0 → G10** milestones in [G milestones: requirements-only intake](#g-milestones-requirements-only-intake-g0g10) when you need jobs that start from **prose** and gated **`DesignSpec`** instead of a file ([Chapter 18](../18-greenfield-from-requirements/README.md)). Each milestone has **micro-steps** (small checkboxes), links into deeper chapters, and a **Done when** test you can actually run. For charter-to-launch ordering, use the **P1.1–P1.22** list in [Roadmap — from project start to production](roadmap-to-production.md).
 
 **Before you sequence milestones**, read [Roadmap — from project start to production](roadmap-to-production.md) for phases **P0–P5** (charter → MVP → alpha → production readiness → launch → operate) and how they align with **M0–M10**.
 
@@ -15,7 +15,7 @@ This page is the **spine** for juniors: you build your own **application reposit
 | Area | You should have |
 |------|------------------|
 | **Skills** | Basic TypeScript, HTTP APIs, JSON, `git`, terminal comfort |
-| **Accounts** | Figma account; ability to create a **Personal access token** (or OAuth app for production later) |
+| **Accounts** | Optional **Figma** token if you ship that adapter; LLM provider billing; for **G** milestones, a sponsor who can **approve** briefs and specs in time |
 | **Runtime** | Node.js 20+, `pnpm` or `npm`; Docker (recommended for M6) |
 | **LLM** | API key for at least one provider you will call from the server |
 
@@ -44,6 +44,134 @@ flowchart LR
   m8 --> m9[M9_security]
   m9 --> m10[M10_cost_model]
 ```
+
+## G milestones: requirements-only intake (G0–G10)
+
+Use **G0–G10** for **requirements-only** intake: the agent drafts **ProductBrief → UxSpec → DesignSpec** with **human approvals**, then joins the same **M5–M8** codegen, sandbox, and review path. Product story and diagrams: [Chapter 18 — Requirements-only intake](../18-greenfield-from-requirements/README.md). Example JSON: [design-spec.min.example.json](../schemas/design-spec.min.example.json).
+
+### Milestone dependency (G0–G10)
+
+```mermaid
+flowchart LR
+  g0[G0_env] --> g1[G1_raw_brief]
+  g1 --> g2[G2_ProductBrief]
+  g2 --> g3[G3_UxSpec]
+  g3 --> g4[G4_DesignSpec]
+  g4 --> g6[G6_state_machine]
+  g6 --> g7[G7_LLM_spec_chain]
+  g7 --> g8[G8_patches]
+  g8 --> g9[G9_sandbox]
+  g9 --> g10[G10_preview_repair]
+```
+
+You may **merge G2–G4** into fewer PRs while learning; split them before production so approvals stay honest in the DB.
+
+### G0 — Environment (reuse M0)
+
+**Purpose:** Same API shell; job rows record `source: "requirements"` (or your enum).
+
+**Done when:** Same as **M0**, plus one test job created with `source: "requirements"`.
+
+### G1 — Raw brief intake
+
+**Purpose:** Persist unstructured input safely.
+
+**Implement (micro-steps)**
+
+- [ ] **G1.1** Extend `POST /jobs` to accept `source: "requirements"` plus markdown string or `rawBriefId`.  
+- [ ] **G1.2** Store raw text in DB or object storage; never echo secrets into logs.  
+- [ ] **G1.3** Enforce max length and attachment MIME allowlist if files are allowed.
+
+**Done when:** You can re-read the identical brief after server restart.
+
+### G2 — ProductBrief schema + gate
+
+**Purpose:** First **schema-valid** product artifact.
+
+**Implement (micro-steps)**
+
+- [ ] **G2.1** Add `product-brief.schema.json` (problem, users, non-goals, metrics, compliance flags).  
+- [ ] **G2.2** LLM or guided form produces draft; validate; **retry ≤ `R_llm`** on schema errors.  
+- [ ] **G2.3** `POST /jobs/:id/brief/approve` and `…/request_changes` (or equivalent) update state.  
+- [ ] **G2.4** Golden JSON tests in CI.
+
+**Done when:** Invalid brief JSON cannot reach `drafting_ux` state.
+
+### G3 — UxSpec (information architecture)
+
+**Purpose:** Routes and navigation are agreed before visual intent.
+
+**Implement (micro-steps)**
+
+- [ ] **G3.1** Add `ux-spec.schema.json` (routes, `nav[]`, key flows).  
+- [ ] **G3.2** Draft from approved `ProductBrief` only (pass handles, not full chat).  
+- [ ] **G3.3** Approval gate; changes loop back with reviewer comment in context.
+
+**Done when:** `UxSpec` validates and sponsor has **one** approved revision on disk.
+
+### G4 — DesignSpec (design intent without Figma)
+
+**Purpose:** Replace Figma IR as the driver for layout/codegen.
+
+**Implement (micro-steps)**
+
+- [ ] **G4.1** Start from [design-spec.min.example.json](../schemas/design-spec.min.example.json); extend fields your codegen needs.  
+- [ ] **G4.2** Bump `schemaVersion` when you add breaking fields.  
+- [ ] **G4.3** Approval gate before `generating_code`.  
+- [ ] **G4.4** Golden fixtures: two different “products” with different route sets.
+
+**Done when:** Layout step consumes **only** `DesignSpec` slices for a job (no hidden prose).
+
+### G5 — Optional visual references
+
+**Purpose:** Mood without pretending pixels are spec.
+
+**Implement (micro-steps)**
+
+- [ ] **G5.1** Store reference image URLs or blobs; virus scan / size cap as your org requires.  
+- [ ] **G5.2** Inject **captions or embeddings**, not raw megabytes, into prompts.
+
+**Done when:** References are optional; jobs still work with zero attachments.
+
+### G6 — Job state machine (clarify → spec → code)
+
+**Purpose:** Honest UX and dashboards for long human waits.
+
+**Implement (micro-steps)**
+
+- [ ] **G6.1** Implement states from [Chapter 03](../03-workflow/README.md) spec-led variant (`clarifying`, `awaiting_brief_approval`, …).  
+- [ ] **G6.2** Cap clarification rounds with constant `R_clarify`.  
+- [ ] **G6.3** Persist reviewer comments structured for the next draft.
+
+**Done when:** No manual DB edits to move between states.
+
+### G7 — LLM spec chain (bounded)
+
+**Purpose:** Same discipline as **M4**, applied to brief/spec drafts.
+
+**Implement (micro-steps)**
+
+- [ ] **G7.1** One prompt module per artifact; versioned assembly like [modular prompt architecture](../05-prompts/modular-prompt-architecture.md).  
+- [ ] **G7.2** Log tokens per stage; attribute cost on job row.  
+- [ ] **G7.3** Unit tests with **mock** LLM returning invalid JSON once, then valid.
+
+**Done when:** CI proves schema-retry path for at least **ProductBrief**.
+
+### G8 — PatchBundle apply (reuse M5)
+
+**Done when:** Same **Done when** as **M5** on a job that used **requirements-only** intake.
+
+### G9 — Sandbox (reuse M6)
+
+**Done when:** Same as **M6**.
+
+### G10 — Preview + repair + review (reuse M7–M8)
+
+**Done when:** Same as **M7–M8** (`RepairBrief`, review decisions).
+
+### After G10
+
+Apply **M9** and **M10** to **all** job kinds. **Requirements-only** intake increases **prompt-injection** and **claims** risk—review [Chapter 14 — Security](../14-security/README.md) for untrusted user text.
 
 ### Suggested app repo layout (yours, not this docs repo)
 

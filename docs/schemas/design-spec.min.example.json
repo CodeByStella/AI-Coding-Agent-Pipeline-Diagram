@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "productName": "Example SaaS",
+  "audience": "Small product teams",
+  "routes": [
+    {
+      "id": "landing",
+      "path": "/",
+      "sections": ["hero", "features", "pricing", "faq", "footer"]
+    }
+  ],
+  "sections": {
+    "hero": {
+      "layout": "two_column",
+      "headline": "Ship faster with clarity",
+      "subhead": "One paragraph max; replace in CMS.",
+      "primaryCta": { "label": "Start trial", "href": "/signup" }
+    },
+    "features": {
+      "layout": "three_column_cards",
+      "items": [
+        { "title": "Fast", "body": "Short description." },
+        { "title": "Safe", "body": "Short description." },
+        { "title": "Observable", "body": "Short description." }
+      ]
+    }
+  },
+  "tokens": {
+    "color": { "primary": "#0f172a", "accent": "#22c55e", "surface": "#ffffff" },
+    "spacing": { "md": 16, "lg": 24, "xl": 32 },
+    "radius": { "card": 8 }
+  }
+}

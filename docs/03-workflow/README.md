@@ -19,7 +19,7 @@ From a user’s eyes: **paste a Figma link** → wait while the system fetches a
 | `awaiting_review` | M8 |
 | `completed` / `failed` | M3 lifecycle terminals |
 
-**Neighbors**: [Build track](../00-build-track/README.md) · [Chapter 02 — Architecture](../02-architecture/README.md) · [Chapter 04 — Agent design](../04-agent-design/README.md) · [Chapter 08 — Feedback loop](../08-feedback-loop/README.md) · [Multi-step orchestration](../05-prompts/multi-step-orchestration.md) · **Canonical algorithm:** [README.md](../../README.md)
+**Neighbors**: [Build track](../00-build-track/README.md) · [Chapter 02 — Architecture](../02-architecture/README.md) · [Chapter 04 — Agent design](../04-agent-design/README.md) · [Chapter 18 — Requirements-only intake](../18-greenfield-from-requirements/README.md) · [Chapter 08 — Feedback loop](../08-feedback-loop/README.md) · [Multi-step orchestration](../05-prompts/multi-step-orchestration.md) · **Canonical algorithm:** [README.md](../../README.md)
 
 ## Deep technical breakdown
 
@@ -55,7 +55,7 @@ stateDiagram-v2
 
 ### Orchestrator algorithm (synced with README)
 
-The diagram below is the **same branch-level logic** as diagram **§2 Main job algorithm** in [README.md](../../README.md). Use it when implementing the worker; use the **state diagram** above for UX copy and dashboards.
+The diagram below is the **same branch-level logic** as **diagram 2 (main job algorithm)** in [README.md](../../README.md). Use it when implementing the worker; use the **state diagram** above for UX copy and dashboards.
 
 ```mermaid
 flowchart TB
@@ -124,6 +124,55 @@ flowchart TB
 | `awaiting_review` | `waitH` |
 | `completed` | `doneOk` |
 | `failed` | any `terminal_*` node |
+
+## Variant: requirements-only jobs (no Figma in the same run)
+
+When `job.source` is **requirements-only**, **do not** reuse state names like `fetching_figma`—users lose trust. Prefer explicit states (aligned with [Chapter 18](../18-greenfield-from-requirements/README.md) and **G6** on the [build track](../00-build-track/README.md)):
+
+| State (example) | Meaning |
+|-----------------|--------|
+| `clarifying` | Optional Q&A rounds capped by `R_clarify` |
+| `drafting_brief` | LLM or form filling `ProductBrief` |
+| `awaiting_brief_approval` | Human gate **G-A** |
+| `drafting_ux` | Building `UxSpec` |
+| `awaiting_ux_approval` | Human gate **G-B** |
+| `drafting_design_spec` | Building `DesignSpec` |
+| `awaiting_spec_approval` | Human gate **G-C** |
+| `generating_code` … `completed` / `failed` | Same semantics as the Figma track from codegen onward |
+
+**Build track:** map these to **G1–G10**; reuse **M5–M8** behavior for patches, sandbox, preview, and repair.
+
+### State diagram (spec-led jobs)
+
+```mermaid
+stateDiagram-v2
+  [*] --> received
+  received --> clarifying
+  clarifying --> drafting_brief
+  drafting_brief --> awaiting_brief_approval
+  awaiting_brief_approval --> drafting_ux: approved
+  awaiting_brief_approval --> clarifying: changes_requested
+  drafting_ux --> awaiting_ux_approval
+  awaiting_ux_approval --> drafting_design_spec: approved
+  awaiting_ux_approval --> drafting_brief: changes_requested
+  drafting_design_spec --> awaiting_spec_approval
+  awaiting_spec_approval --> generating_code: approved
+  awaiting_spec_approval --> drafting_ux: changes_requested
+  generating_code --> running_checks
+  running_checks --> awaiting_review: pass
+  running_checks --> repairing: fail
+  repairing --> generating_code: retries_left
+  repairing --> failed: no_retries
+  awaiting_review --> completed: approve
+  awaiting_review --> repairing: change_request
+  completed --> [*]
+  failed --> [*]
+```
+
+### Pitfalls specific to this variant
+
+- **Reusing Figma states** in the DB makes metrics meaningless.  
+- **Skipping `awaiting_*_approval`** to “move faster” ships wrong products—treat approvals as part of the **control loop**, not paperwork.
 
 ## Real example
 

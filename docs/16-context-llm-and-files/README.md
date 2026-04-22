@@ -4,7 +4,7 @@
 
 You **cannot** paste the whole codebase into the model every time: it will not fit, it is noisy, and it leaks secrets. Instead the app builds a **small, purposeful package of text** for each step: “here is the slice of the design we are implementing, here are the few repo files that matter, here are the rules.” The model answers in a **fixed format** (usually JSON). Your backend **checks** that format, then **writes or patches files** safely—not by blindly trusting prose.
 
-**Neighbors**: [Chapter 04 — Agent design](../04-agent-design/README.md) · [Chapter 05 — Prompts / Code generator](../05-prompts/code-generator.md) · [Modular prompt architecture](../05-prompts/modular-prompt-architecture.md) · [Multi-step orchestration](../05-prompts/multi-step-orchestration.md) · [Chapter 06 — Code generation](../06-code-generation/README.md) · [Chapter 08 — Feedback loop](../08-feedback-loop/README.md)
+**Neighbors**: [Chapter 04 — Agent design](../04-agent-design/README.md) · [Chapter 05 — Prompts / Code generator](../05-prompts/code-generator.md) · [Modular prompt architecture](../05-prompts/modular-prompt-architecture.md) · [Multi-step orchestration](../05-prompts/multi-step-orchestration.md) · [Chapter 06 — Code generation](../06-code-generation/README.md) · [Chapter 08 — Feedback loop](../08-feedback-loop/README.md) · [Chapter 18 — Requirements-only intake](../18-greenfield-from-requirements/README.md)
 
 ## Deep technical breakdown
 
@@ -15,11 +15,11 @@ Treat context as **layers** (send in this order; stop when you hit the token bud
 | Layer | Contents | Why |
 |-------|-----------|-----|
 | **L0 System** | Role, stack (Vite+React+TS), global bans (`eval`, raw secrets), output schema name | Stable, cacheable |
-| **L1 Task** | `fileKey`, `frameId`, user goal one paragraph, `promptVersion` | Grounds the job |
-| **L2 IR slice** | Only the subtree for the target frame (depth-capped), plus resolved styles/tokens as compact JSON—not raw full Figma file | Design truth without 200k tokens |
+| **L1 Task** | **Figma intake:** `fileKey`, `frameId`, goal paragraph, `promptVersion`. **Spec intake:** `jobId`, `designSpecVersion`, approved artifact handles, `promptVersion` | Grounds the job |
+| **L2 Design truth** | **Figma intake:** IR slice for the target frame (depth-capped), resolved styles/tokens—**not** raw full Figma file. **Spec intake:** `DesignSpec` slice for the route/section under implementation ([example fixture](../schemas/design-spec.min.example.json)) | Same token discipline: send **handles + subtree**, never whole history |
 | **L3 Repo hints** | Small **excerpts** with line numbers: `package.json` scripts/deps summary, `tsconfig` paths, **design-system index** (export list), existing file **only if** the change touches it (cap e.g. 200 lines or diff hunks) | Enough to import correctly |
 | **L4 Retrieved** (optional) | Top‑k chunks from embeddings over DS docs / past good PRs—**only for mapper/codegen** | Teaches conventions without full tree |
-| **L5 Errors / feedback** | Structured `errors[]`, last `RepairBrief`, optional user comment tied to `figmaNodeId` | Drives repair without resending whole logs |
+| **L5 Errors / feedback** | Structured `errors[]`, last `RepairBrief`, optional user comment tied to `figmaNodeId` **or** `designSpecSectionId` | Drives repair without resending whole logs |
 
 **Rules that keep context small:**
 

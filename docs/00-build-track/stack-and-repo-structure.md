@@ -2,7 +2,7 @@
 
 ## Simple explanation
 
-This page names the **default technology choices** for the **service you build** (the Figma-to-code agent), and shows a **concrete folder layout** so juniors know what to create in their own git repository. The **generated website** is still **React + TypeScript + Vite** (see [README.md](../../README.md)); the **agent platform** is mostly **Node + TypeScript** talking to Figma, a database, and an LLM.
+This page names the **default technology choices** for the **agentic coding agent** you build, and shows a **concrete folder layout** so juniors know what to create in their own git repository. The **generated website** is still **React + TypeScript + Vite** (see [README.md](../../README.md)); the **agent platform** is mostly **Node + TypeScript** with a **database**, **queue**, **LLM** clients, optional **Figma REST** adapter, and **sandbox** runners.
 
 **Neighbors:** [Build track](README.md) · [Roadmap to production](roadmap-to-production.md) · [Chapter 17 — Build vs integrate](../17-build-vs-integrate/README.md) · [Chapter 07 — Sandbox](../07-sandbox/README.md)
 
@@ -27,7 +27,7 @@ This page names the **default technology choices** for the **service you build**
 
 ### Monorepo layout (full example)
 
-Create a **new repository** (not this docs repo) with a layout like:
+Create a **new repository** (not this docs repo). If you ship **requirements-only** intake, add JSON Schemas (and types) for `ProductBrief`, `UxSpec`, and `DesignSpec` beside IR—see [Chapter 18 — Requirements-only intake](../18-greenfield-from-requirements/README.md) and [design-spec.min.example.json](../schemas/design-spec.min.example.json). A typical **monorepo** layout:
 
 ```text
 your-figma-agent/                 # root
@@ -51,6 +51,7 @@ your-figma-agent/                 # root
 │   ├── ir-schema/                # JSON Schema files + generated types; used by worker + tests
 │   │   ├── schemas/
 │   │   │   ├── ir.v0.json
+│   │   │   ├── design-spec.v0.json   # requirements-only: routes/sections/tokens (see docs/schemas example)
 │   │   │   └── patch-bundle.v2.json
 │   │   └── src/index.ts          # exports validators
 │   ├── figma-client/             # GET file, GET images, backoff, typed responses (thin wrapper)

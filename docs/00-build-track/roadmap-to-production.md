@@ -4,6 +4,8 @@
 
 This page is the **delivery roadmap**: what happens **before** deep coding, how it lines up with **technical milestones M0–M10** ([Build track](README.md)), and what you must add so the system is **production-grade** (staging, security, observability, launch, and ongoing operation). Phases are broken into **numbered micro-steps** (P0.1, P1.8, …) so you can ship progress in small slices. Share it with PMs and tech leads so **“done”** means the same thing to everyone.
 
+**Product scope:** you are delivering an **agentic coding pipeline** (states, caps, codegen, sandbox, review). **Design** may enter via a **Figma file** (covered in **M1–M2**) and/or via **requirements-only** work (**G0–G10**, [Chapter 18 — Requirements-only intake](../18-greenfield-from-requirements/README.md)). Phases **P0–P5** apply regardless; size engineering for every intake you ship.
+
 **Neighbors:** [Build track](README.md) · [Stack and repository structure](stack-and-repo-structure.md) · [HTTP samples](http-and-shape-samples.md) · [Chapter 10 — Deployment](../10-deployment/README.md) · [Chapter 11 — Scaling](../11-scaling/README.md) · [Chapter 14 — Security](../14-security/README.md) · [Chapter 15 — Cost optimization](../15-cost-optimization/README.md)
 
 ## Deep technical breakdown
@@ -12,14 +14,14 @@ This page is the **delivery roadmap**: what happens **before** deep coding, how 
 
 | Phase | Intent | Build-track milestones | Chapters to lean on |
 |-------|--------|------------------------|---------------------|
-| **P0 — Charter** | Agree problem, users, metrics, scope | Before / overlapping **M0** | [Overview](../01-overview/README.md) |
-| **P1 — Local MVP** | Prove pipeline on laptop | **M0–M6** | [Architecture](../02-architecture/README.md), [Workflow](../03-workflow/README.md), [Sandbox](../07-sandbox/README.md), [Code generation](../06-code-generation/README.md) |
+| **P0 — Charter** | Agree problem, users, metrics, scope | Before / overlapping **M0** / **G0** | [Overview](../01-overview/README.md), [Requirements-only intake](../18-greenfield-from-requirements/README.md) |
+| **P1 — Local MVP** | Prove agentic pipeline on laptop | **M0–M6** (core + optional Figma in **M1**); add **G0–G10** slices if spec-led jobs are in scope | [Architecture](../02-architecture/README.md), [Workflow](../03-workflow/README.md), [Sandbox](../07-sandbox/README.md), [Code generation](../06-code-generation/README.md), [Requirements-only intake](../18-greenfield-from-requirements/README.md) |
 | **P2 — Product alpha** | Real files, real users, feedback UX | **M7–M8** + auth stub | [Feedback loop](../08-feedback-loop/README.md), [Workflow](../03-workflow/README.md) |
 | **P3 — Production readiness** | Safe, observable, cost-bounded | **M9–M10** + platform work | [Security](../14-security/README.md), [Cost](../15-cost-optimization/README.md), [Scaling](../11-scaling/README.md), [Model selection](../09-model-selection/README.md) |
 | **P4 — Launch** | Controlled go-live | Release + comms | [Deployment](../10-deployment/README.md) |
 | **P5 — Operate** | Keep quality under change | Continuous | [Common issues](../12-common-issues/README.md), [Best practices](../13-best-practices/README.md) |
 
-**Rule of thumb:** **M0–M10** = “the product works.” **P3–P5** = “we can run it for customers without heroics.”
+**Rule of thumb:** **M0–M10** = “the **agentic coding pipeline** works for the **design intakes** you ship.” **P3–P5** = “we can run it for customers without heroics.”
 
 ### Micro-step index (read top to bottom)
 

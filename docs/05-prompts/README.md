@@ -6,7 +6,7 @@
 
 **Prompt engineering** means writing instructions so the model does **predictable** work. In this system, each agent step gets: what role it plays, what JSON it must return, and what happens if it disobeys. Good prompts are **short, structured, and testable**.
 
-**Neighbors**: [Build track](../00-build-track/README.md) · [Chapter 04 — Agent design](../04-agent-design/README.md) · [Chapter 16 — Context, LLM I/O, files](../16-context-llm-and-files/README.md) · [Modular prompt architecture](modular-prompt-architecture.md) · [Multi-step orchestration](multi-step-orchestration.md) · per-node pages: [figma-parser](figma-parser.md), [layout-analyzer](layout-analyzer.md), [component-mapper](component-mapper.md), [code-generator](code-generator.md), [validator](validator.md), [feedback-engine](feedback-engine.md) · [Chapter 06 — Code generation](../06-code-generation/README.md) · [Chapter 17 — Build vs integrate](../17-build-vs-integrate/README.md)
+**Neighbors**: [Build track](../00-build-track/README.md) · [Chapter 04 — Agent design](../04-agent-design/README.md) · [Chapter 16 — Context, LLM I/O, files](../16-context-llm-and-files/README.md) · [Chapter 18 — Requirements-only intake](../18-greenfield-from-requirements/README.md) · [Modular prompt architecture](modular-prompt-architecture.md) · [Multi-step orchestration](multi-step-orchestration.md) · per-node pages: [figma-parser](figma-parser.md), [layout-analyzer](layout-analyzer.md), [component-mapper](component-mapper.md), [code-generator](code-generator.md), [validator](validator.md), [feedback-engine](feedback-engine.md) · [Chapter 06 — Code generation](../06-code-generation/README.md) · [Chapter 17 — Build vs integrate](../17-build-vs-integrate/README.md)
 
 ## Deep technical breakdown
 
@@ -22,7 +22,7 @@ Use a **three-layer prompt**:
 
 **Modular prompts:** split policy, stack, role, and schema fragments; assemble per step with a versioned **registry**—see [Modular prompt architecture](modular-prompt-architecture.md).
 
-**Multi-step LLM work:** when the model must choose a sequence of tools or subtasks, use a **bounded planner + executor** (`PlanStep[]`, allowlisted tools, `max_steps` / re-plan caps)—see [Multi-step orchestration](multi-step-orchestration.md). Keep the **Figma IR pipeline fixed** unless you intentionally carve out an exploratory repair island.
+**Multi-step LLM work:** when the model must choose a sequence of tools or subtasks, use a **bounded planner + executor** (`PlanStep[]`, allowlisted tools, `max_steps` / re-plan caps)—see [Multi-step orchestration](multi-step-orchestration.md). Keep the **fixed pipeline** (IR or **`DesignSpec`** → layout → map → codegen → validate) unless you intentionally carve out an exploratory repair island. For **requirements-only** jobs, keep the **brief → UX → DesignSpec** chain **fixed** too—each hop is its own schema-validated “node,” then **reuse** the same layout/codegen/validator prompts with **`DesignSpec` slices** instead of IR slices ([Chapter 18](../18-greenfield-from-requirements/README.md)).
 
 **Off-the-shelf layers:** sandboxes, gateways, queues, and telemetry are often faster to integrate than to build—see [Chapter 17 — Build vs integrate](../17-build-vs-integrate/README.md).
 

@@ -8,10 +8,10 @@
 
 ## Deep technical breakdown
 
-**Layout → CSS**: map Figma auto-layout `HORIZONTAL`/`VERTICAL` to `flex-direction: row|column`; `itemSpacing` → `gap`; padding fields → `padding`. Use **CSS flex** first; use **grid** when two-dimensional alignment regions are detected (e.g. card grids).  
+**Layout → CSS**: map layout intent (e.g. Figma auto-layout `HORIZONTAL`/`VERTICAL`, or **`DesignSpec` layout fields**) to `flex-direction: row|column`; spacing → `gap`; padding fields → `padding`. Use **CSS flex** first; use **grid** when two-dimensional alignment regions are detected (e.g. card grids).  
 **Components → reuse**: emit leaf `Button` imports from DS; for unknown primitives, generate local `Stack`/`Box` helpers.  
-**Responsive**: encode breakpoints from Figma **if** constraints or separate frames exist (`Hero_mobile`, `Hero_desktop`); otherwise default `{ sm:640, md:768, lg:1024 }` and document assumptions.  
-**Design tokens**: export Figma variables to `tokens.css` as CSS variables `--color-text-primary`, `--space-3`, etc.; reference them from modules.
+**Responsive**: encode breakpoints when the **design model** provides them (e.g. separate frames `Hero_mobile` / `Hero_desktop`, or explicit responsive blocks in **`DesignSpec`**); otherwise default `{ sm:640, md:768, lg:1024 }` and document assumptions.  
+**Design tokens**: emit `tokens.css` as CSS variables (`--color-text-primary`, `--space-3`, …) from **Figma variables** when present, or from **`DesignSpec` tokens** when intake is requirements-only; reference them from modules.
 
 ## Mermaid diagram
 

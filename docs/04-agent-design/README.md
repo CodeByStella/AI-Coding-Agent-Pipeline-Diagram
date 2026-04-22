@@ -4,7 +4,7 @@
 
 Instead of one giant AI, you run **smaller specialists**: one step understands Figma nodes, another understands layout, another writes React. They pass a **shared worksheet** (the IR plus error messages) forward like a relay race.
 
-**Neighbors**: [Chapter 03 — Workflow](../03-workflow/README.md) · [Chapter 16 — Context, LLM I/O, files](../16-context-llm-and-files/README.md) · [Chapter 05 — Prompts](../05-prompts/README.md) · [Modular prompt architecture](../05-prompts/modular-prompt-architecture.md) · [Multi-step orchestration](../05-prompts/multi-step-orchestration.md) · [Chapter 06 — Code generation](../06-code-generation/README.md) · **Canonical sequence:** [README.md](../../README.md) (*§3 Time-ordered collaboration*)
+**Neighbors**: [Chapter 03 — Workflow](../03-workflow/README.md) · [Chapter 16 — Context, LLM I/O, files](../16-context-llm-and-files/README.md) · [Chapter 05 — Prompts](../05-prompts/README.md) · [Modular prompt architecture](../05-prompts/modular-prompt-architecture.md) · [Multi-step orchestration](../05-prompts/multi-step-orchestration.md) · [Chapter 06 — Code generation](../06-code-generation/README.md) · [Chapter 18 — Requirements-only intake](../18-greenfield-from-requirements/README.md) · **Canonical sequence:** [README.md](../../README.md) (*diagram 3 — time-ordered collaboration*)
 
 ## Deep technical breakdown
 
@@ -17,13 +17,20 @@ Instead of one giant AI, you run **smaller specialists**: one step understands F
 5. **Validator** — run `tsc`, eslint, unit tests, visual snapshot optional.  
 6. **Feedback loop engine** — translate failures into the next prompt context.
 
+**Requirements-only additions** (same downstream, different upstream; see [Chapter 18](../18-greenfield-from-requirements/README.md)):
+
+7. **Brief normalizer** — hygiene on raw text (PII flags, length, attachment metadata) before LLM.  
+8. **Clarification interviewer** — emits `Question[]`, merges **structured** answers into context (bounded rounds).  
+9. **Product / UX / Design spec writers** — separate prompt modules with **independent JSON Schemas** and human approval between stages.  
+10. **Spec-to-layout bridge** — pure code: slice `DesignSpec` into the **layout analyzer input** shape (ideally shared with IR slices).
+
 **Communication**: use a **directed acyclic graph** in v1 (linear pipeline). Add branching only when needed (e.g. parallelize image downloads). Messages should be **typed JSON** with `schemaVersion`, `nodeId`, `artifactUri`, and `errors[]`.
 
 ## Mermaid diagram
 
 ### Full pipeline sequence (synced with README)
 
-Same as diagram **§3 Time-ordered collaboration** in [README.md](../../README.md); update **README and this block** when message flow changes.
+Same as **diagram 3 (time-ordered collaboration)** in [README.md](../../README.md); update **README and this block** when the **shared** message flow after design model changes. For **requirements-only** intake, use the sequence in [Chapter 18](../18-greenfield-from-requirements/README.md) until the flow rejoins codegen.
 
 ```mermaid
 sequenceDiagram
