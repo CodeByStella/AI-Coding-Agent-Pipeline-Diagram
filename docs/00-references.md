@@ -2,7 +2,7 @@
 
 ## Simple explanation
 
-This page is a **link hub** so chapters stay readable and you still have proof for external behavior. For **implementation order**, milestones, **stack**, **repo layout**, and **roadmap to production**, use [Roadmap to production](../00-build-track/roadmap-to-production.md), [Build track](../00-build-track/README.md), [Stack and repository structure](../00-build-track/stack-and-repo-structure.md), and [HTTP samples](../00-build-track/http-and-shape-samples.md).
+This page is a **link hub** so chapters stay readable and you still have proof for external behavior. For **implementation order**, milestones, **stack**, **repo layout**, and **roadmap to production**, use [Roadmap to production](00-build-track/roadmap-to-production.md), [Build track](00-build-track/README.md), [Stack and repository structure](00-build-track/stack-and-repo-structure.md), and [HTTP samples](00-build-track/http-and-shape-samples.md).
 
 ## Deep technical breakdown
 
@@ -34,7 +34,7 @@ Prefer linking here from other docs instead of scattering URLs; when APIs have b
 
 ### Optional ecosystem (agent infrastructure)
 
-Pointers for **integrations** discussed in [Chapter 17 — Build vs integrate](../17-build-vs-integrate/README.md); verify license and data policy before adoption.
+Pointers for **integrations** discussed in [Chapter 17 — Build vs integrate](17-build-vs-integrate/README.md); verify license and data policy before adoption.
 
 | Topic | URL |
 |-------|-----|

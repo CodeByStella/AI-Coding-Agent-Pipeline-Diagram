@@ -1,0 +1,9 @@
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editors / local
+*.swp
+*~
+.idea/
